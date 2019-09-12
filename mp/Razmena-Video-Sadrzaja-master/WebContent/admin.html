@@ -1,0 +1,256 @@
+package Servlets;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import DAO.CommentDAO;
+import DAO.LikeDislikeDAO;
+import DAO.SubscribersDAO;
+import DAO.UserDAO;
+import DAO.VideoDAO;
+import model.Comment;
+import model.User;
+import model.Video;
+import model.Video.Visibility;
+
+
+
+
+/**
+ * Servlet implementation class VideoServlet
+ */
+public class VideoServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public VideoServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//metoda za dobijanje podataka kad udjes u video
+		try {
+			int id=Integer.parseInt(request.getParameter("id"));
+			HttpSession session = request.getSession();
+			User loggedInUser = (User) session.getAttribute("loggedInUser");
+			Video video = VideoDAO.getVideoById(id);
+			String status="visiter";
+			String isSubscribed="unsuscribed";
+			
+			if(loggedInUser != null) {
+				status="logedUser";
+				int	isSub=SubscribersDAO.findSubscribed(video.getOwner().getId(),loggedInUser.getId());
+				if(isSub > 0) {
+						isSubscribed="subscribe";
+				}
+				if(loggedInUser == video.getOwner() || loggedInUser.getRole().toString().equals("ADMIN")) {
+					
+				}
+				else if(video.isBlocked() == true || video.getOwner().isBlocked() == true) {
+					status="blocked";
+					
+					Map<String, Object> data = new HashMap<>();
+					data.put("status", status);
+					ObjectMapper mapper = new ObjectMapper();
+					String jsonData = mapper.writeValueAsString(data);
+					response.setContentType("application/json");
+					response.getWriter().write(jsonData);
+					return;
+				}
+					
+			}else if(video.isBlocked() == true || video.getOwner().isBlocked() == true) {
+				status="blocked";
+				
+				Map<String, Object> data = new HashMap<>();
+				data.put("status", status);
+				ObjectMapper mapper = new ObjectMapper();
+				String jsonData = mapper.writeValueAsString(data);
+				response.setContentType("application/json");
+				response.getWriter().write(jsonData);
+				return;
+			}
+			
+			int videoLikeNumber=LikeDislikeDAO.getVideosLikeNumber(video.getId());
+			video.setPreviews(video.getPreviews()+1);
+			
+			VideoDAO.updateVideo(video);
+			
+			ArrayList<Comment> comments=CommentDAO.getComments(video.getId());
+			
+			int subNumber=SubscribersDAO.getSubscribersNumber(video.getOwner().getId());
+			
+			Map<String, Object> data = new HashMap<>();
+			data.put("video", video);
+			data.put("status", status);
+			data.put("user", loggedInUser);
+			data.put("isSubscribed",isSubscribed);
+			data.put("comments",comments);
+			data.put("videoLikeNumber",videoLikeNumber);
+			data.put("subNumber", subNumber);
+			ObjectMapper mapper = new ObjectMapper();
+			String jsonData = mapper.writeValueAsString(data);
+			response.setContentType("application/json");
+			response.getWriter().write(jsonData);
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//crud,order,block,unblock za video
+		String status=request.getParameter("status");
+		HttpSession session = request.getSession();
+		User loggedInUser = (User) session.getAttribute("loggedInUser");
+		
+		switch (status) {
+		case "add":
+			String url=request.getParameter("url");
+			String name=request.getParameter("name");
+			String visibil=request.getParameter("visibility");
+			boolean allowComments=Boolean.parseBoolean(request.getParameter("allowComments"));
+			boolean allowRating=Boolean.parseBoolean(request.getParameter("allowRating"));
+			String description=request.getParameter("description");
+			Visibility visibility;
+			if(visibil.equals("public")) {
+				visibility=Visibility.PUBLIC;
+			}
+			else if(visibil.equals("private")) {
+				visibility=Visibility.PRIVATE;
+			}
+			else {
+				visibility=Visibility.UNLISTED;
+			}
+			
+			Date d=new Date();
+			Video vv=new Video(url, name, "2", description, visibility, false, 0, d, loggedInUser, allowRating, allowComments, allowRating, false, 0, 0);
+			VideoDAO.addVideo(vv);
+			
+			Map<String, Object> data = new HashMap<>();
+			data.put("status", "success");
+			ObjectMapper mapper = new ObjectMapper();
+			String jsonData = mapper.writeValueAsString(data);
+			response.setContentType("application/json");
+			response.getWriter().write(jsonData);
+			break;
+		case "edit":
+			int id=Integer.parseInt(request.getParameter("id"));
+			Video video = VideoDAO.getVideoById(id);
+			String visibili=request.getParameter("visibility");
+			boolean allowCommentss=Boolean.parseBoolean(request.getParameter("allowComments"));
+			boolean allowRatings=Boolean.parseBoolean(request.getParameter("allowRating"));
+			String descriptions=request.getParameter("description");
+			Visibility visibilitys;
+			if(visibili.equals("public")) {
+				visibilitys=Visibility.PUBLIC;
+			}
+			else if(visibili.equals("private")) {
+				visibilitys=Visibility.PRIVATE;
+			}
+			else {
+				visibilitys=Visibility.UNLISTED;
+			}
+			video.setVisibility(visibilitys);
+			video.setAllowComments(allowCommentss);
+			video.setAllowRating(allowRatings);
+			video.setDescription(descriptions);
+			
+			VideoDAO.updateVideo(video);
+			
+			Map<String, Object> dataEdit = new HashMap<>();
+			dataEdit.put("status", "success");
+			ObjectMapper mapperEdit = new ObjectMapper();
+			String jsonDataEdit = mapperEdit.writeValueAsString(dataEdit);
+			response.setContentType("application/json");
+			response.getWriter().write(jsonDataEdit);
+			break;
+		case "delete":
+			int idD=Integer.parseInt(request.getParameter("videoId"));
+			Video videoD= VideoDAO.getVideoById(idD);
+			videoD.setDeleted(true);
+			VideoDAO.updateVideo(videoD);
+			
+			Map<String, Object> dataD = new HashMap<>();
+			dataD.put("status", "success");
+			ObjectMapper mapperD = new ObjectMapper();
+			String jsonDataD = mapperD.writeValueAsString(dataD);
+			response.setContentType("application/json");
+			response.getWriter().write(jsonDataD);
+			break;
+		case "order":
+			String stat = "success";
+			ArrayList<Video> videos=null;
+			try {
+				String column=request.getParameter("column");
+				String ascDesc=request.getParameter("ascDesc");
+				String userName =request.getParameter("userName");
+				User user=UserDAO.getByUserName(userName);
+				
+				if(loggedInUser!= null) {
+				 if(loggedInUser.getUsername().equals(userName) || loggedInUser.getRole().toString().equals("ADMIN")) {
+					 videos=VideoDAO.OrderAllUserVideo(user.getId(), column, ascDesc);
+				}
+				}else {
+					 videos=VideoDAO.OrderPublicUserVideo(user.getId(), column, ascDesc);
+				}
+				
+			} catch (Exception e) {status="faliure";}
+			
+			Map<String, Object> datao = new HashMap<>();
+			datao.put("stat", stat);
+			datao.put("videos", videos);
+			ObjectMapper mappero = new ObjectMapper();
+			String jsonDatao = mappero.writeValueAsString(datao);
+			response.setContentType("application/json");
+			response.getWriter().write(jsonDatao);
+			break;
+		case "block":
+			int idB=Integer.parseInt(request.getParameter("videoId"));
+			Video videoB= VideoDAO.getVideoById(idB);
+			videoB.setBlocked(true);
+			VideoDAO.updateVideo(videoB);
+			
+			Map<String, Object> dataB = new HashMap<>();
+			dataB.put("status", "success");
+			ObjectMapper mapperB = new ObjectMapper();
+			String jsonDataB = mapperB.writeValueAsString(dataB);
+			response.setContentType("application/json");
+			response.getWriter().write(jsonDataB);
+			break;
+		case "unblock":
+			int idUB=Integer.parseInt(request.getParameter("videoId"));
+			Video videoUB= VideoDAO.getVideoById(idUB);
+			videoUB.setBlocked(false);
+			VideoDAO.updateVideo(videoUB);
+			
+			Map<String, Object> dataUB = new HashMap<>();
+			dataUB.put("status", "success");
+			ObjectMapper mapperUB = new ObjectMapper();
+			String jsonDataUB = mapperUB.writeValueAsString(dataUB);
+			response.setContentType("application/json");
+			response.getWriter().write(jsonDataUB);
+			break;
+		}
+	}
+
+}

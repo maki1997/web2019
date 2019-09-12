@@ -1,0 +1,494 @@
+$(document).ready(function(e) {
+	loadPosts();
+});
+
+//editovanje posta ostali podaci zezaju
+function loadPosts(){
+	
+	console.log("usao u load post");
+	$.ajax({
+		type:'GET',
+        url: "http://localhost:8080/osa/posts/",
+        dataType: 'json',
+		cache: false,
+        success: function (response) {
+        	var postDiv=$("#postsRow");
+        	postDiv.empty();
+			for(var i=0; i<response.length; i++) {
+				post = response[i];
+				var postPhoto = 'http://www.personalbrandingblog.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640-300x300.png';
+				console.log(post.photo)
+				if(post.photo!=null){
+					postPhoto = 'data:image/gif;base64,'+post.photo;
+				}
+				var date=format(post.date);
+				
+				
+				
+				postDiv.append(
+						'<div class="col-md-4">'+
+		        		'<a href="postPage.html?postId='+post.id+'" target="_self" id="title">'+
+		        		'<img id="photo" src="'+postPhoto+'" style="width:40% ">'+
+		        		'<p id="titleInfo'+post.id+'">'+post.title+'</p></a>'+
+		        		'<p id="postInfo">Author:'+ post.user.username+'<br>Date:'+ date+'<br>Likes:'+ post.likes+'<br>Dislikes:'+ post.dislikes+'</p>'+
+		        		'<div id="options'+post.id+'">'+
+		        		'</div>'+
+		        		'</div>'
+				)
+				if(userRole == "ADMIN" || userId == post.user.id){
+					
+					$('#options'+post.id).append(
+						'<a href="#deletePostModal" data-toggle="modal" onclick="takePostId('+ post.id+')">Delete post<br></a>'+
+						
+			            '<a href="#editPostModal" data-toggle="modal" onclick="editPostE('+ post.id+')">Edit Post</a>'
+			                
+					);
+				}
+				
+			}
+			
+           
+        },
+		error: function (jqXHR, textStatus, errorThrown) {  
+			alert(textStatus);
+		}
+    });
+}
+
+function editProfileE(id){
+	$('#passwordEditUser').val("");
+	$('#nameEditUser').val("");
+	$('#picture').hide();
+	$('#pictureUploadCheckerEditUser').prop('checked', false);
+}
+
+
+function editProfile(){
+	var password =  $('#passwordEditUser').val().trim();
+	var name = $('#nameEditUser').val().trim();
+	var photo =  $('#picture')[0].files[0];
+	if( name=="" || password==""){
+		alert("All fields must be filled");
+		return;
+	}
+	var checked = false;
+	if($('#pictureUploadCheckerEditUser').prop('checked')){
+		checked=true;
+	}
+	if(checked == true && typeof photo == 'undefined'){
+		alert("You must select a photo.");
+		return;
+	}
+	var data={
+			'name':name,
+			'password':password,
+			'userType':userRole
+	}
+	$.ajax({
+		type: 'PUT',
+        contentType: 'application/json',
+        url: 'http://localhost:8080/osa/users/update/'+userId,
+        data: JSON.stringify(data),
+        dataType: 'json',
+		cache: false,
+		processData: false,
+        success: function (response) {
+        	if(checked==true){
+        		console.log(response.id)
+        		console.log(photo)
+        		uploadImg(response.id,photo);
+        	}
+        	$('#editUser').modal('toggle');
+        },
+		error: function (jqXHR, textStatus, errorThrown) {  
+			alert(jqXHR.status);
+		}
+    });
+}
+
+function addNewPostE(){
+	$('#pictureA').hide();
+	$('#pictureUploadCheckerAddPost').prop('checked', false);
+}
+function addNewPost(){
+	var title = $('#addTitle').val().trim();
+	var desc = $('#addDescription').val().trim();
+	var photo =  $('#pictureA')[0].files[0];
+	var tag = $('#addTagsField').val().trim();
+	var tags = tag.split("#");
+	var checked = false;
+	if($('#pictureUploadCheckerAddPost').prop('checked')){
+		checked=true;
+			}
+	if(checked == true && typeof photo == 'undefined'){
+		alert("You must select a photo.");
+		return;
+	}
+	if(title=="" || desc == "" || tags.length==0 || tags.length==1){
+		alert("All fields must be filled");
+		return;
+	}
+	var data= new FormData();
+	if(checked == true){
+		data.append('title',title);
+		data.append('description',desc);
+		data.append('user_id',parseInt(userId));
+		data.append('latitude',getRandomCordinate());
+		data.append('longitude',getRandomCordinate());
+		data.append('photo',photo);
+		
+	}else{
+		data.append('title',title);
+		data.append('description',desc);
+		data.append('user_id',parseInt(userId));
+		data.append('latitude',getRandomCordinate());
+		data.append('longitude',getRandomCordinate());
+	}
+	console.log(data)
+	$.ajax({
+		type: 'POST',
+        url: 'http://localhost:8080/osa/posts/add',
+        contentType: false,
+        data: data,
+		cache: false,
+		processData: false,
+        success: function (response) {
+        	console.log(response)
+        	$('#addPostModal').modal('toggle');
+        	
+        	if(tags!=null && tags.length!=0  && tags.length!=1 ){
+	            for (i=1; i<tags.length; i++) {
+	            	var data = new FormData();
+	            	data.append('name', tags[i].toUpperCase().trim());
+	            	
+	            	addTag(data,response.id);
+	            }
+            }
+            if(checked == true){
+            	addPicturePost(response.id,photo);
+        	}
+            loadPosts();
+        },
+		error: function (jqXHR, textStatus, errorThrown) {  
+			$('#addPostModal').modal('toggle');
+			console.log(jqXHR, textStatus, errorThrown)
+			alert(textStatus);
+		}
+    });
+	
+}
+
+function addTag(data,postId){
+	$.ajax({
+		type: 'POST',
+        url: 'http://localhost:8080/osa/tags/add',
+        contentType: false,
+        data: data,
+		cache: false,
+		processData: false,
+        success: function (response) {
+        	console.log("tag success: "+ response.name+"id: "+response.id);
+        	joingTagAndPost(response.id,postId);
+           
+        },
+		error: function (jqXHR, textStatus, errorThrown) {  
+			alert(textStatus);
+		}
+    });
+}
+
+function addPicturePost(id,photo){
+	console.log(id+" "+photo)
+	var data=new FormData();
+	data.append('id',id);
+	data.append('photo',photo);
+	
+	$.ajax({
+		type: 'POST',
+        contentType: false,
+        url: 'http://localhost:8080/osa/posts/upload_photo',
+        data: data,
+        dataType: false,
+		cache: false,
+		processData: false,
+        success: function (response) {
+        	console.log("proslo dodavanje slike");
+           
+        },
+		error: function (jqXHR, textStatus, errorThrown) {  
+			alert(textStatus);
+		}
+    });
+}
+
+function sortPost(){
+	console.log("usao u sort")
+	var sortBy = $('#orderPost').val();
+	console.log("sortirati po:" + sortBy)
+	var orderBy = "";
+	if(sortBy == 1){
+		orderby="orderbydate";
+	}
+	else if(sortBy == 2){
+		orderby="orderbypopularity";
+		
+	}else if(sortBy == 3){
+		orderby="orderbycomments";
+		}
+	
+	var url="http://localhost:8080/osa/posts/"+orderby;
+	console.log(url)
+	$.ajax({
+        url: url,
+        dataType: 'json',
+		cache: false,
+        success: function (response) {
+        	var postDiv=$("#postsRow");
+        	postDiv.empty();
+			for(var i=0; i<response.length; i++) {
+				post = response[i];
+				console.log(post)
+				var postPhoto = 'http://www.personalbrandingblog.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640-300x300.png';
+				if(post.photo!=null){
+					postPhoto = 'data:image/gif;base64,'+post.photo;
+				}
+				var date=format(post.date);
+				postDiv.append(
+						'<div class="col-md-4">'+
+		        		'<a href="postPage.html?postId='+post.id+'" target="_self" id="title">'+
+		        		'<img id="photo" src="'+postPhoto+'" style="width:40% ">'+
+		        		'<p id="titleInfo'+post.id+'">'+post.title+'</p></a>'+
+		        		'<p id="postInfo">Author:'+ post.user.username+'<br>Date:'+ date+'<br>Likes:'+ post.likes+'<br>Dislikes:'+ post.dislikes+'</p>'+
+		        		'<div id="options'+post.id+'">'+
+		        		'</div>'+
+		        		'</div>'
+				)
+				if(userRole == "ADMIN" || userId == post.user.id){
+					console.log("usao u options");
+					console.log("#options"+post.id);
+					$('#options'+post.id).append(
+						'<a href="#deletePostModal" data-toggle="modal" onclick="takePostId('+ post.id+')">Delete post<br></a>'+
+						
+						'<a href="#editPostModal" data-toggle="modal" onclick="editPostE('+ post.id+')">Edit Post</a>'
+			                
+					);
+				}
+				
+				
+			}
+           
+        },
+		error: function (jqXHR, textStatus, errorThrown) {  
+			alert(textStatus);
+		}
+    });
+	
+}
+
+
+function filterPosts(){
+	var paramForSearch=$("#searchParameters").val().trim().toUpperCase();
+	if(paramForSearch == ""){
+		alert("Field must be filled");
+		return
+	}
+	var url="http://localhost:8080/osa/posts/filter/"+paramForSearch;
+	console.log(paramForSearch)
+	$.ajax({
+        url: url,
+        dataType: 'json',
+		cache: false,
+        success: function (response) {
+        	var postDiv=$("#postsRow");
+        	postDiv.empty();
+			for(var i=0; i<response.length; i++) {
+				post = response[i];
+				console.log(post)
+				var postPhoto = 'http://www.personalbrandingblog.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640-300x300.png';
+				if(post.photo!=null){
+					postPhoto = 'data:image/gif;base64,'+post.photo;
+				}
+				var date=format(post.date);
+				postDiv.append(
+						'<div class="col-md-4">'+
+		        		'<a href="postPage.html?postId='+post.id+'" target="_self" id="title">'+
+		        		'<img id="photo" src="'+postPhoto+'" style="width:40% ">'+
+		        		'<p id="titleInfo'+post.id+'">'+post.title+'</p></a>'+
+		        		'<p id="postInfo">Author:'+ post.user.username+'<br>Date:'+ date+'<br>Likes:'+ post.likes+'<br>Dislikes:'+ post.dislikes+'</p>'+
+		        		'<div id="options'+post.id+'">'+
+		        		'</div>'+
+		        		'</div>'
+				)
+				if(userRole == "ADMIN" || userId == post.user.id){
+					console.log("usao u options");
+					console.log("#options"+post.id);
+					$('#options'+post.id).append(
+						'<a href="#deletePostModal" data-toggle="modal" onclick="takePostId('+ post.id+')">Delete post<br></a>'+
+						
+						'<a href="#editPostModal" data-toggle="modal" onclick="editPostE('+ post.id+')">Edit Post</a>'
+			                
+					);
+				}
+				
+				
+			}
+           
+        },
+		error: function (jqXHR, textStatus, errorThrown) {  
+			alert(textStatus);
+		}
+    });
+}
+function uploadChecker(){
+	$('#picture').toggle();
+}
+function uploadCheckerA(){
+	$('#pictureA').toggle();
+}
+function joingTagAndPost(tagId,postId){
+	console.log("tagId: "+tagId + " postId: "+postId);
+	var myUrl = 'http://localhost:8080/osa/posts/joing_tag_and_post/'+postId+'/'+tagId
+	console.log(myUrl)
+	$.ajax({
+		type: 'POST',
+        url: myUrl,
+		cache: false,
+        success: function (response) {
+        	console.log("link success");
+        },
+		error: function (jqXHR, textStatus, errorThrown) {  
+			alert(textStatus);
+		}
+    });
+}
+var postId=0;
+function takePostId(id){
+	postId=id;
+}
+function deletePost(){
+	
+	$.ajax({
+		type: 'DELETE',
+        url: 'http://localhost:8080/osa/posts/delete/'+postId,
+		success: function (response) {
+        	window.location.href = "postsPage.html";
+           
+        },
+		error: function (jqXHR, textStatus, errorThrown) {  
+			alert(textStatus);
+		}
+    });
+}
+function uploadCheckerEditPost(){
+	$('#pictureEP').toggle();
+}
+var editPost = null;
+function editPostE(id){
+	postId=id;
+	$('#pictureEP').hide();
+	$('#pictureUploadCheckerEditPost').prop('checked', false);
+	$('#editTitle').val("");
+	$('#editDescription').val("");
+	$('#editTagsField').val("");
+	$.ajax({
+        url: 'http://localhost:8080/osa/posts/'+id,
+        contentType: "application/json",
+		type: 'GET',
+        success: function (response) {
+        	editPost = response;
+        	
+        },
+		error: function (jqXHR, textStatus, errorThrown) {  
+			alert(textStatus);
+		}
+    });
+}
+
+function editPostPP(){
+	var title = $('#editTitle').val().trim();
+	var desc = $('#editDescription').val().trim();
+	var photo = $('#pictureEP')[0].files[0];
+	var tagsField = $('#editTagsField').val().trim();
+	var tags = tagsField.split("#");
+	console.log('photo: '+photo);
+	console.log('tags duzina'+tags.length)
+	if( desc == "" || title==""  || tags.length==0 || tags.length==1){
+		alert("All fields must be filled.");
+		return;
+	}
+	var checked = false;
+	if($('#pictureUploadCheckerEditPost').is(":checked")){
+		checked=true;
+	}
+	if(typeof photo == 'undefined' && checked==true){
+		alert("Picture must be uploaded, or uncheck checkbox. :D");
+		return;
+	}
+	console.log(checked)
+	if(checked==true){
+		console.log("el radi dodavanje slika pri editovanju posta")
+		addPicturePost(postId,photo);
+	}
+	
+	var data = {
+			'title':title,
+			'description':desc,
+			'likes':editPost.likes,
+			'dislikes':editPost.dislikes,
+			'longitude':editPost.longitude,
+			'latitude':editPost.latitude,
+			'date':editPost.date,
+			'user':editPost.user,
+	}
+	console.log(data);
+	$.ajax({
+		type: 'PUT',
+        contentType: 'application/json',
+        url: 'http://localhost:8080/osa/posts/update/'+postId,
+        data: JSON.stringify(data),
+        dataType: 'json',
+		cache: false,
+		processData: false,
+        success: function (response) {
+        	$('#editPostModal').modal('toggle');
+        	$('#titleInfo'+postId).text(title);
+        	removeTags(response.id);
+        	if(tags!=null && tags.length!=0  && tags.length!=1 ){
+	            for (i=1; i<tags.length; i++) {
+	            	var data = new FormData();
+	            	data.append('name', tags[i].toUpperCase().trim());
+	            	addTag(data,response.id);
+	            }
+            }	
+        	
+        	loadPosts();
+        },
+		error: function (jqXHR, textStatus, errorThrown) {  
+			$('#editPostModal').modal('toggle');
+			alert(textStatus);
+		}
+    });
+}
+function removeTags(id){
+	$.ajax({
+        url: 'http://localhost:8080/osa/posts/removetags/' + id,
+		type: 'DELETE',
+        success: function (response) {
+        	console.log("proslo brisanje tagova")
+        },
+		error: function (jqXHR, textStatus, errorThrown) {  
+			alert(textStatus);
+		}
+    });
+}
+
+
+
+
+
+
+
+
+
+
+

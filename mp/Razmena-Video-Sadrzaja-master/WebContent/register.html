@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset=utf-8 content="width=device-width, initial-scale=1 maximum-scale=1, user-scalable=no">
+	<title>My Youtube by MR</title>
+	<script src="js/jquery-2.1.4.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css"/>
+	<script src="bootstrap/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/admin.css">
+	<link rel="stylesheet" type="text/css" href="css/navigation.css">
+    <script type="text/javascript" src="js/navigation.js"></script>
+    <script type="text/javascript" src="js/admin.js"></script>
+</head>
+<body>
+	<nav class="navbar navbar-default navbar-fixed-top" style="background-color: #e3f2fd;">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="index.html">MyYouTube</a>
+            </div>
+                <div class="collapse navbar-collapse" id="mMenu">
+                    
+                    
+                    <ul class="nav navbar-nav navbar-right" id="navBarLogIn">
+                        
+                        <li><p id="loggeduser"></p></li>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="userNameTab">Other<span class="caret"></span></a>
+                            <ul class="dropdown-menu" id="mainDropdown">
+                                <li><a href="user.html" target="_self" id="userPage"><span class="glyphicon glyphicon-eye-open"></span> My Channel</a></li>
+                                <li><a href="admin.html" target="_self" id="adminPage"><span class="glyphicon glyphicon-user"></span> Users</a></li>
+                                
+                                
+                            </ul>
+                            
+                        </li>
+                        
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-cog"></span> Options<span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#" target="_self">Help</a></li>
+                                <li><a target="_self" data-toggle="modal" href="#logoutModal"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                            </ul>
+                        </li>
+                        
+                    </ul>
+
+
+                    <ul class="nav navbar-nav navbar-right" id="navBarNotLogIn">
+                        
+                        <li>
+                            <a  data-toggle="model fade" href="#loginModal" >
+                                <span class="glyphicon glyphicon-log-in"></span> Login</a>
+                        </li>
+                        <li>
+                            <a  href="register.html"><span class="glyphicon glyphicon-user" ></span> Register</a>
+                        </li>
+                        
+                    </ul>
+                </div>
+            </div>
+       
+    </nav>
+    <div class="modal fade" id="loginModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Login</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>Username:</p>
+            <input type="text" placeholder="Enter Username" name="username" id="username" required>
+            <p>Password:</p>
+            <input type="password" placeholder="Enter Password" name="password" id="password" required>
+            <a href="register.html"><br>Don't have account? Click here to sign up</a>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="loginSubmit">Login</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="logoutModal" role="dialog" >
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">You ready to Leave?</h5>
+                    </div>
+                    <div class="modal-body">Select "Logout" below if you are ready to leave.</div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                        <a class="btn btn-danger" href="LogOutServlet" onclick="logout()">Logout</a>
+                    </div>
+                </div>
+            </div>
+    </div>
+    
+        <div class="modal fade" id="deleteModal" role="dialog" >
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Are you sure?</h5>
+                    </div>
+                    <div class="modal-body">Select "Delete" below if you are want to delete this user.</div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                        <a class="btn btn-danger" id="deleteuser">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="badLoginModal" role="dialog">
+            <div class="modal-dialog modal-sm">
+                  <!-- Modal content-->
+                <div class="modal-content">
+                      <div class="modal-header">
+                          <h4 class="modal-title">Login failed.</h4>
+                    </div>
+                    <div id="loginErrorMessage" class="modal-body">
+                        <p>Wrong username or password.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <div class="mainDiv">
+    	<button data-toggle="collapse" class="btn btn-default" data-target="#filter" id="btnFilter">Order<span class="glyphicon glyphicon-align-right"></span></button>
+    	<div id="filter" class="collapse">
+    		<ul>
+    			<li>Order by:</li>
+    			<li>
+    			 	<select id="orderUsers" name="order">
+						<option value="userName">Username</option>
+						<option value="name">Name</option>
+						<option value="surname">Surname</option>
+						<option value="email">Email</option>
+						<option value="role">Role</option>
+					</select>
+				</li>
+				<li>
+					<label class="container-rb" >Ascending
+			  			<input type="radio" id="asc" value="ASC" checked="checked" name="radio">
+			  			<span class="checkmark"></span>
+					</label>
+				</li>
+				<li>
+					<label class="container-rb"  >Descending
+			  			<input type="radio" id="desc" value="DESC" name="radio">
+			  			<span class="checkmark"></span>
+					</label>
+				</li>
+				<li>
+					<input type="submit" value="Order" id="order">
+				</li>
+				
+    		</ul>
+    	</div>
+    	<div class="form-group-sm">
+        	<div class="input-group" id="filterUsers">
+            	<input type="text" class="form-control" placeholder="Filter" autocomplete="off" id="filterParameters">
+            	<span class="input-group-btn">
+            	<button class="btn btn-danger btn-sm" id="filterSubmitUsers" >Filter</button>
+            	</span>
+            </div>
+         </div>
+    	<div class="row">
+            
+        </div>
+    </div>
+</body>
+</html>

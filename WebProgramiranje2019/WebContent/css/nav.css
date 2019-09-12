@@ -1,0 +1,45 @@
+body { 
+        
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+}
+body{
+    position: relative;
+    text-align: center;   
+}
+
+.container-fluid{
+    text-align: left;
+}
+
+.btn-danger{
+    background-color: blue;
+}
+
+#navBarlogIn{
+	display: none;
+}
+#navBarNotLogIn{
+	display: block;
+}
+#search{
+    margin-left: 35px;
+    width: 200%;
+}
+
+footer {
+    margin-top: 5%;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+      
+}
+footer p{
+    margin-left: 5%;
+    margin-top: 7px;
+    font-size: 11;
+    color: white;
+}

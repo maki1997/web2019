@@ -1,0 +1,7 @@
+INDEX VERSION 1.4+C:\Users\Maki\Desktop\novoWebProg\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+3827782664.index
+3857863940.index
+12904421.index
+2288195477.index
+3288226435.index
+561117862.index
