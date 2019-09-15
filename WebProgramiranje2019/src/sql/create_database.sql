@@ -32,6 +32,23 @@ CREATE TABLE airports (
 	deleted BOOLEAN NOT NULL DEFAULT FALSE,
     PRIMARY KEY(id)
 );
+
+CREATE TABLE reservations (
+	id BIGINT AUTO_INCREMENT,
+	startFlight INT NOT NULL,
+	endFlight INT NOT NULL,
+	startFlightSeat INT NOT NULL,
+	endFlightSeat INT NOT NULL,
+	reservationDate DATE NOT NULL,
+	ticketSaleDate DATE NOT NULL,
+	passenger INT NOT NULL,
+	passengerFirstName VARCHAR(20) NOT NULL,
+	passengerLastName VARCHAR(20) NOT NULL,
+	PRIMARY KEY(id)
+);
+
+
+
 	INSERT INTO users(userName,password,registrationDate,role,blocked,deleted) VALUES('admin','admin','2018-7-3','ADMIN',false,false);
 	INSERT INTO users(userName,password,registrationDate,role,blocked,deleted) VALUES('user1','user1','2018-2-3','USER',false,false);
 	INSERT INTO users(userName,password,registrationDate,role,blocked,deleted) VALUES('user2','user2','2018-4-3','USER',false,false);
