@@ -19,11 +19,7 @@ public class ReservationServlet extends HttpServlet {
 		super();
 	}
 	
-	@Override
-	public void init() {
-		testAdd();
-		testTakenSeats();
-	}
+	
 	
 	
 	

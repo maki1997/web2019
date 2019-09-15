@@ -44,7 +44,7 @@ CREATE TABLE reservations (
 	passenger INT NOT NULL,
 	passengerFirstName VARCHAR(20) NOT NULL,
 	passengerLastName VARCHAR(20) NOT NULL,
-	deleted BOOLEAN NOT NULL DEFAULT 0,
+	deleted BOOLEAN DEFAULT 0 NOT NULL ,
 	PRIMARY KEY(id)
 );
 
@@ -64,4 +64,7 @@ CREATE TABLE reservations (
 	INSERT INTO airports(name,deleted) VALUES('London', false);
 	INSERT INTO airports(name,deleted) VALUES('Tokyo', false);
 	INSERT INTO airports(name,deleted) VALUES('New York', false);
+	
+	insert into reservations (startFlight,endFlight,startFlightSeat,endFlightSeat,reservationDate,ticketSaleDate,passenger,passengerFirstName,passengerLastName,deleted) values (1,3,3,3,'2018-7-3','2018-9-3',1,'NIko','Bitan',false);
+	
 	

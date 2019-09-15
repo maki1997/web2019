@@ -20,6 +20,7 @@
 				
                     
                     <ul class="nav navbar-nav navbar-right" id="navBarLogIn">
+                    	<li><a target="_self" href="myReservations.html"><span class="glyphicon glyphicon-plane"></span> MyReservations</a></li>
                     	<li><a target="_self" href="myProfile.html"><span class="glyphicon glyphicon-plane"></span> MyProfile</a></li>
                     	<li><a target="_self" href="airports.html"><span class="glyphicon glyphicon-plane"></span> Airports</a></li>
                     	<li><a target="_self" id="adminPage" href="users.html"><span class="glyphicon glyphicon-user"></span> Users</a></li>
@@ -111,6 +112,28 @@
                     <div class="modal-footer">
                         <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                         <a class="btn btn-danger" id="deleteflight">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="modal fade" id="resModal" role="dialog" >
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Are you sure?</h5>
+                    </div>
+                    <div class="modal-body" id="reservationsByFlight">
+                    	
+        				<table class="table table-hover">
+        				<thead><tr><th> Start flight </th> <th> End flight </th><th> Start flight seat </th> <th> End flight seat </th> <th> Reservation Date </th> <th> Ticket sale Date </th> <th> Username </th> <th> Name </th> <th> Surname </th></tr></thead>
+        				<tbody id="resBody"></tbody>
+        				</table>
+        
+                    
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">close</button>
                     </div>
                 </div>
             </div>
