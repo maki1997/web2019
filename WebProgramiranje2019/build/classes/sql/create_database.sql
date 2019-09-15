@@ -44,6 +44,7 @@ CREATE TABLE reservations (
 	passenger INT NOT NULL,
 	passengerFirstName VARCHAR(20) NOT NULL,
 	passengerLastName VARCHAR(20) NOT NULL,
+	deleted BOOLEAN NOT NULL DEFAULT 0,
 	PRIMARY KEY(id)
 );
 
