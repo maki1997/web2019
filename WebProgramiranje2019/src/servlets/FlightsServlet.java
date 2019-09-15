@@ -45,7 +45,7 @@ public class FlightsServlet extends HttpServlet {
 			HttpSession session = request.getSession();
 			User loggedInUser = (User) session.getAttribute("loggedInUser");
 			ArrayList<Flight> flights = FlightDAO.getFlights();
-
+			
 			Map<String, Object> data = new HashMap<>();
 			data.put("user", loggedInUser);
 			data.put("flights", flights);
@@ -103,7 +103,27 @@ public class FlightsServlet extends HttpServlet {
 				int idF = Integer.parseInt(request.getParameter("idF"));
 				
 				Flight f = FlightDAO.getFlightById(idF);
-				
+				System.out.println(f.getFlightNumber());
+				String endA = request.getParameter("endA");
+				System.out.println("naziv krajnjeg aerodroma"+endA);
+				Airport eA = AirportDAO.getByName(endA);
+				System.out.println(eA.getName());
+				f.setEndAirport(eA);
+				Date date = null;
+				try {
+					date = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("endD"));
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				f.setEndDate(date);
+				System.out.println(date);
+				int nos = Integer.parseInt(request.getParameter("numofs"));
+				f.setNumberOfSeats(nos);
+				System.out.println(nos);
+				double tp = Double.parseDouble(request.getParameter("p"));
+				f.setTicketPrice(tp);
+				System.out.println(tp);
 				FlightDAO.Update(f);
 				
 				/*ArrayList<Ticket> tickets =TicketsDAO.getUsersTickets(user.getId());

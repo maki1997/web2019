@@ -86,7 +86,18 @@
     <servlet-name>ProfileServlet</servlet-name>
     <url-pattern>/ProfileServlet</url-pattern>
   </servlet-mapping>
-  
+
+  <servlet>
+    <description></description>
+    <display-name>GetFlight</display-name>
+    <servlet-name>GetFlight</servlet-name>
+    <servlet-class>servlets.GetFlight</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GetFlight</servlet-name>
+    <url-pattern>/GetFlight</url-pattern>
+  </servlet-mapping>
+
   <servlet>
   	<description></description>
   	<display-name>ReservationServlet</display-name>

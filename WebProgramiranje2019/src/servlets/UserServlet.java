@@ -50,9 +50,7 @@ public class UserServlet extends HttpServlet {
 			
 			if(loggedInUser != null) {
 				status="logedUser";
-				
-				
-				}
+			}
 			
 			Map<String, Object> data = new HashMap<>();
 			data.put("status", status);
