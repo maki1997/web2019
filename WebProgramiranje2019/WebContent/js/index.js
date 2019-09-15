@@ -66,10 +66,14 @@ $(document).ready(function(e) {
 		event.preventDefault();
 		return false;
 	});
+	
+	$('#makeReservation').on('click',function(event){
+		$('#makeResModal').modal();
+	});
 	$('#editModal').on('show.bs.modal',function(event){
 		 var idFlight = $(event.relatedTarget).data('f-id');
 		 console.log(idFlight);
-		 document.getElementById("editflight").setAttribute("idFlight", idFlight);
+		 document.getElementById("ef").setAttribute("idFlight", idFlight);
 		 $.get('GetFlight',{'idF':idFlight},function(data){
 			 
 			 $('#eaadd').val(data.flight.endAirport.name);
@@ -90,19 +94,49 @@ $(document).ready(function(e) {
 	
 	$('#resModal').on('show.bs.modal',function(event){
 		 var idFlightRes = $(event.relatedTarget).data('fr-id');
+		 
 		 var c = $('#resBody');
-		 console.log(idFlightRes);
+		 localStorage.setItem("flight",idFlightRes);
+		 c.empty();
+		 console.log('id leta:'+idFlightRes);
 		 $.get('ReservationsServlet',{'reservationId':idFlightRes},function(data){
-		 		for (r in data.reservations) {
-		 			console.log(data.reservations[r]);
-		 			c.append('<tr><td>' +'Flight number: '+ data.reservations[r].startFlight.flightNumber + '</td><td>' +'Flight number: '+ data.reservations[r].endFlight.flightNumber + '</td><td>' + data.reservations[r].startFlightSeat + '</td><td>' + data.reservations[r].endFlightSeat + '</td><td>' + format(data.reservations[r].reservationDate) + '</td><td>' + format(data.reservations[r].ticketSaleDate) + '</td><td>' + data.reservations[r].passenger.username + '</td><td>' + data.reservations[r].passengerFirstname + '</td><td>' + data.reservations[r].passengerLastname + '</td></tr>');
-		 			
-		 		}
+			 for(r in data.reservationsByFlight){
+		 		c.append('<tr><td>' +'Flight number: '+ data.reservationsByFlight[r].startFlight.flightNumber + '</td><td>' +'Flight number: '+ data.reservationsByFlight[r].endFlight.flightNumber + '</td><td>' + data.reservationsByFlight[r].startFlightSeat + '</td><td>' + data.reservationsByFlight[r].endFlightSeat + '</td><td>' + format(data.reservationsByFlight[r].reservationDate) + '</td><td>' + format(data.reservationsByFlight[r].ticketSaleDate) + '</td><td>' + data.reservationsByFlight[r].passenger.username + '</td><td>' + data.reservationsByFlight[r].passengerFirstname + '</td><td>' + data.reservationsByFlight[r].passengerLastname + '</td></tr>');
+			 }
+	});
+	});
+	
+	$('#makeResModal').on('show.bs.modal',function(event){
+		 var endFlightSelect = $('#endFlight');
+		 var f =localStorage.getItem("flight");
+		 console.log(f);
+		 $.get('FlightsServlet',{},function(data){
+			 endFlightSelect.empty();
+			 for (f in data.flights){
+				 endFlightSelect.append('<option value='+data.flights[f].id+' selected>'+data.flights[f].flightNumber+'</option>')
+			 }
+		 		
 		 
 	});
 	});
 	
-	$('#editflight').on('click',function(event){
+	$('#finishReservation').on('click',function(event){
+		var startFid=localStorage.getItem("flight");
+		var endFid=$('#endFlight').val();
+		var startFSeat = $('#startFlightSeat').val();
+		var endFSeat = $('#endFlightSeat').val();
+		var name = $('#pfirstname').val();
+		var surname = $('#plastname').val();
+		console.log("sid"+startFid+"end"+endFid);
+		$.post('ReservationsServlet',{'startFlight':startFid,'endFlight':endFid,'startFlightSeat':startFSeat,'endFlightSeat':endFSeat,'firstname':name,'lastname':surname,'status':"add"},function(data){
+			
+		})
+		$('#makeResModal').modal('toggle');
+		
+		
+	});
+	
+	$('#ef').on('click',function(event){
 	   	 var id=$(this).attr('idFlight');
 	   	 console.log(id);
 	   	 var endAirport =$('#eaadd').val();
@@ -110,7 +144,7 @@ $(document).ready(function(e) {
 		 var numberos =$('#nosadd').val();
 		 var pricee = $('#priceadd').val();
 	   	var params = {'idF':id,'endA':endAirport,'endD':endDate,'numofs':numberos,'p':pricee}
-	   	console.log("params:"+params.endA);
+	   	console.log("params:"+id);
 	   	$.post('FlightsServlet',{'idF':id,'endA':endAirport,'endD':endDate,'numofs':numberos,'p':pricee,'status':"edit",},function(data){
 	   		content.empty();
 		   	$.get('FlightsServlet',{},function(data){

@@ -1,7 +1,10 @@
 package servlets;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +17,11 @@ import javax.servlet.http.HttpSession;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
+import dao.AirportDAO;
+import dao.FlightDAO;
 import dao.ReservationDAO;
+import model.Airport;
+import model.Flight;
 import model.Reservation;
 import model.User;
 
@@ -43,6 +49,7 @@ public class ReservationsServlet extends HttpServlet {
 			User loggedInUser = (User) session.getAttribute("loggedInUser");
 			int userId = loggedInUser.getId();
 			int flightId = Integer.parseInt(request.getParameter("reservationId"));
+			System.out.println(flightId);
 			List<Reservation> res = ReservationDAO.getByUser(userId);
 			List<Reservation> res1 = ReservationDAO.getByStartFlight(flightId);
 			Map<String, Object> data = new HashMap<>();
@@ -56,6 +63,7 @@ public class ReservationsServlet extends HttpServlet {
 
 		} catch (Exception e) {
 			System.out.println(e);
+			e.printStackTrace();
 		}
 	}
 
@@ -63,8 +71,44 @@ public class ReservationsServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
+		String status = request.getParameter("status");
+		System.out.println(status);
+		switch (status) {
+		
+		case "add":
+			User loggedUser = (User) request.getSession().getAttribute("loggedInUser");
+			// check if user is logged in
+			// check if user is authorized to execute add reservation
+			if(loggedUser == null) {
+				System.out.println("user je null");
+			}
+			
+			int startFlightId = Integer.parseInt(request.getParameter("startFlight"));	
+			int endFlightId = Integer.parseInt(request.getParameter("endFlight"));
+			int startFlightSeat = Integer.parseInt(request.getParameter("startFlightSeat"));
+			int endFlightSeat = Integer.parseInt(request.getParameter("endFlightSeat"));
+			String firstname = request.getParameter("firstname");
+			String lastname = request.getParameter("lastname");
+			System.out.println(startFlightId + endFlightId);
+			// check if all parameters are non null
+			
+			Flight startFlight = FlightDAO.getFlightById(startFlightId);
+			Flight endFlight = FlightDAO.getFlightById(endFlightId);
+			// check if returned flights are non null
+			
+			Reservation r = new Reservation(startFlight, endFlight, startFlightSeat, endFlightSeat, loggedUser, firstname, lastname);
+			ReservationDAO.add(r);
+			
+			
+			Map<String, Object> data = new HashMap<>();
+			data.put("user", loggedUser);
+			ObjectMapper mapper = new ObjectMapper();
+			String jsonData = mapper.writeValueAsString(data);
+			response.setContentType("application/json");
+			response.getWriter().write(jsonData);
+			response.setStatus(200);
+			break;
+		}
 	}
 
 }

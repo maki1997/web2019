@@ -118,10 +118,10 @@
         </div>
         
         <div class="modal fade" id="resModal" role="dialog" >
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Are you sure?</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Reservations</h5>
                     </div>
                     <div class="modal-body" id="reservationsByFlight">
                     	
@@ -133,11 +133,39 @@
                     
                     </div>
                     <div class="modal-footer">
+                    	<button class="btn btn-secondary" type="button" id="makeReservation">Make reservation</button>
                         <button class="btn btn-secondary" type="button" data-dismiss="modal">close</button>
                     </div>
                 </div>
             </div>
         </div>
+        
+        <div class="modal fade" id="makeResModal" role="dialog" >
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Reserve this flight</h5>
+                    </div>
+                    	<div class="modal-body">
+            		<p>Start flight seat:</p>
+            		<input type="number" id="startFlightSeat" class="form-control" required>
+            		<p>End flight:</p>
+            		<select id="endFlight" class="form-control" required></select>
+          			<p>End flight seat:</p>
+            		<input type="number" id="endFlightSeat" class="form-control" required>
+          			<p>Passenger last name:</p>
+            		<input type="text" class="form-control" placeholder="name" name="name" id="pfirstname" required>
+            		<p>Passenger last name:</p>
+            		<input type="text" class="form-control" placeholder="surname" name="surname" id="plastname" required>
+          			</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">close</button>
+                        <a class="btn btn-danger" id="finishReservation">Reserve</a>
+                    </div>
+                </div>
+            </div>
+        
         
         <div class="modal fade" id="editModal" role="dialog" >
             <div class="modal-dialog" role="document">
@@ -157,11 +185,13 @@
           </div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                        <a class="btn btn-danger" id="editflight">Update</a>
+                        <a class="btn btn-danger" id="ef">Update</a>
                     </div>
                 </div>
             </div>
         </div>
+        
+        
         
         <div class="modal fade" id="flightModal">
       <div class="modal-dialog" role="document">

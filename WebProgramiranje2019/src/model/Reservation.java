@@ -32,8 +32,8 @@ public class Reservation {
 		this.passengerFirstname = passengerFirstname;
 		this.passengerLastname = passengerLastname;
 		
-		this.reservationDate = startFlight.getStartDate();
-		this.ticketSaleDate = new Date();
+		this.reservationDate = new Date();
+		this.ticketSaleDate = null;
 		this.deleted = false;
 	}
 
