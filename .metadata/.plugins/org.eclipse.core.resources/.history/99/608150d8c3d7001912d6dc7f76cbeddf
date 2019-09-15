@@ -106,14 +106,14 @@ public class FlightsServlet extends HttpServlet {
 			Airport a2 = AirportDAO.getByName(end);
 			Date date = null;
 			try {
-				date = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("sDate"));
+				date = new SimpleDateFormat("yyyy/MM/dd").parse(request.getParameter("sDate"));
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}  
 			Date date1 = null;
 			try {
-				date1 = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("eDate"));
+				date1 = new SimpleDateFormat("yyyy/MM/dd").parse(request.getParameter("eDate"));
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
