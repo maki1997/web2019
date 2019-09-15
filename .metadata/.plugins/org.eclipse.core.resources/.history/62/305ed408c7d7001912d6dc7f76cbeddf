@@ -39,7 +39,4 @@ body{
 #addFButton{
 	margin-top:15px;
 }
-#filterFlights{
-	margin-top:4%;
-}
 

@@ -153,26 +153,6 @@ public class FlightsServlet extends HttpServlet {
 			
 			break;
 			
-		case "order":
-			String stat = "success";
-			ArrayList<Flight> flights=null;
-			
-			try {
-				String column=request.getParameter("column");
-				String ascDesc=request.getParameter("ascDesc");
-				flights=FlightDAO.OrderBy(column, ascDesc);
-				
-			} catch (Exception e) {status="faliuer";}
-			
-			Map<String, Object> data = new HashMap<>();
-			data.put("stat", stat);
-			data.put("flights", flights);
-			ObjectMapper mapper = new ObjectMapper();
-			String jsonData = mapper.writeValueAsString(data);
-			response.setContentType("application/json");
-			response.getWriter().write(jsonData);	
-			break;
-			
 		
 	}
 	}

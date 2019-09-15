@@ -132,44 +132,7 @@
         </div>
       </div>
     </div>
-        <div class="form-group-sm">
-        	<div class="input-group" id="filterFlights">
-            	<input type="text" class="form-control" placeholder="Search..." autocomplete="off" id="filterParameters">
-            	<span class="input-group-btn">
-            	<button class="btn btn-danger btn-sm" id="filterSubmitFlights" >Search</button>
-            	</span>
-            </div>
-         </div>
-         <button data-toggle="collapse" class="btn btn-default" data-target="#filter" id="btnFilter">Order<span class="glyphicon glyphicon-align-right"></span></button>
-         
-         <div id="filter" class="collapse">
-    		<ul>
-    			
-    			<li>
-    			 	<select id="orderUsers" name="order" class="form-control">
-						<option value="flightNumber" >Flight number</option>
-						<option value="numberOfSeats">Number of seats</option>
-						<option value="ticketPrice">price</option>
-					</select>
-				</li>
-				<li>
-					<label class="container-rb" >Ascending
-			  			<input type="radio" id="asc" value="ASC" checked="checked" name="radio">
-			  			<span class="checkmark"></span>
-					</label>
-				</li>
-				<li>
-					<label class="container-rb"  >Descending
-			  			<input type="radio" id="desc" value="DESC" name="radio">
-			  			<span class="checkmark"></span>
-					</label>
-				</li>
-				<li>
-					<input type="submit" value="Order" id="order">
-				</li>
-				
-    		</ul>
-    	</div>
+        
         <div id="flights">
         <table class="table table-hover">
         <thead><tr><th> Flight Number </th> <th> Starting Airport </th><th> Landing Airport </th> <th> Start Date </th> <th> End Date </th> <th> Number of seats </th> <th> Ticket price (€) </th></tr></thead>

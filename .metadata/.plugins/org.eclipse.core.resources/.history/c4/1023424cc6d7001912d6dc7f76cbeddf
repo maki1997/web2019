@@ -18,7 +18,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dao.AirportDAO;
 import dao.FlightDAO;
-import dao.UserDAO;
 import model.Airport;
 import model.Flight;
 import model.User;
@@ -131,46 +130,6 @@ public class FlightsServlet extends HttpServlet {
 			System.out.println(jsonData3);
 			response.setContentType("application/json");
 			response.getWriter().write(jsonData3);
-			break;
-			
-		case "filter":
-			String statu = "success";
-			ArrayList<Flight> flightsF=null;
-			
-			try {
-				String param=request.getParameter("param");
-				flightsF=FlightDAO.Filter(param);
-				
-			} catch (Exception e) {status="faliuer";}
-			
-			Map<String, Object> dataF = new HashMap<>();
-			dataF.put("stat", statu);
-			dataF.put("flights", flightsF);
-			ObjectMapper mapperF = new ObjectMapper();
-			String jsonDataF = mapperF.writeValueAsString(dataF);
-			response.setContentType("application/json");
-			response.getWriter().write(jsonDataF);	
-			
-			break;
-			
-		case "order":
-			String stat = "success";
-			ArrayList<Flight> flights=null;
-			
-			try {
-				String column=request.getParameter("column");
-				String ascDesc=request.getParameter("ascDesc");
-				flights=FlightDAO.OrderBy(column, ascDesc);
-				
-			} catch (Exception e) {status="faliuer";}
-			
-			Map<String, Object> data = new HashMap<>();
-			data.put("stat", stat);
-			data.put("flights", flights);
-			ObjectMapper mapper = new ObjectMapper();
-			String jsonData = mapper.writeValueAsString(data);
-			response.setContentType("application/json");
-			response.getWriter().write(jsonData);	
 			break;
 			
 		

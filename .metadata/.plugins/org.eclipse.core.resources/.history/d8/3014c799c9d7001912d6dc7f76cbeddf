@@ -149,7 +149,7 @@
     			 	<select id="orderUsers" name="order" class="form-control">
 						<option value="flightNumber" >Flight number</option>
 						<option value="numberOfSeats">Number of seats</option>
-						<option value="ticketPrice">price</option>
+						<option value="price">price</option>
 					</select>
 				</li>
 				<li>

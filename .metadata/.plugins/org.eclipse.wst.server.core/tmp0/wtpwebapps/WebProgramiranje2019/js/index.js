@@ -38,6 +38,37 @@ $(document).ready(function(e) {
 
  	});
  	
+	$('#filterSubmitFlights').on('click',function(event){
+ 		var param1 = $('#filterParameters').val().trim();
+ 		var param = '%'+param1+'%';
+ 		$.post('FlightsServlet',{'status':"filter",'param':param},function(data){
+			if(data.stat=="success"){
+				content.empty();
+				for(f in data.flights){content.append('<tr><td>' + data.flights[f].flightNumber + '</td><td>' + data.flights[f].startAirport.name + '</td><td>' + data.flights[f].endAirport.name + '</td><td>' + format(data.flights[f].startDate) + '</td><td>' + format(data.flights[f].endDate) + '</td><td>' + data.flights[f].numberOfSeats + '</td><td>' + data.flights[f].ticketPrice + '</td></tr>');}
+			}
+		});
+ 		event.preventDefault();
+		return false;
+ 	});
+	
+	$('#order').on('click',function(event){
+    	var desc=$('#desc');
+    	var asc=$('#asc');
+    	var column=$('#orderUsers').val();
+		var ascDesc=asc.val();
+		if(desc.is(':checked')){
+			var ascDesc=desc.val();
+		}
+		$.post('FlightsServlet',{'status':"order",'ascDesc':ascDesc,'column':column},function(data){
+			if(data.stat=="success"){
+				content.empty();
+				for(f in data.flights){content.append('<tr><td>' + data.flights[f].flightNumber + '</td><td>' + data.flights[f].startAirport.name + '</td><td>' + data.flights[f].endAirport.name + '</td><td>' + format(data.flights[f].startDate) + '</td><td>' + format(data.flights[f].endDate) + '</td><td>' + data.flights[f].numberOfSeats + '</td><td>' + data.flights[f].ticketPrice + '</td></tr>');}
+			}
+		});
+		event.preventDefault();
+		return false;
+	});
+ 	
  	$('#addFlightSubmit').on('click',function(event){
  		
  		var fn =$('#flight_number').val();
@@ -97,7 +128,7 @@ $(document).ready(function(e) {
 
 		 	});}
 	   	});
-	   	
+	   
 	   	
 	   	
 	   });
