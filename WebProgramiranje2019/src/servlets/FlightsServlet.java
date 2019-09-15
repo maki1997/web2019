@@ -46,7 +46,6 @@ public class FlightsServlet extends HttpServlet {
 			HttpSession session = request.getSession();
 			User loggedInUser = (User) session.getAttribute("loggedInUser");
 			ArrayList<Flight> flights = FlightDAO.getFlights();
-			
 			Map<String, Object> data = new HashMap<>();
 			data.put("user", loggedInUser);
 			data.put("flights", flights);
@@ -145,6 +144,7 @@ public class FlightsServlet extends HttpServlet {
 
 			} catch (Exception e) {
 				System.out.println(e);
+				e.printStackTrace();
 			}
 			break;
 		case "add":

@@ -86,7 +86,6 @@
     <servlet-name>ProfileServlet</servlet-name>
     <url-pattern>/ProfileServlet</url-pattern>
   </servlet-mapping>
-
   <servlet>
     <description></description>
     <display-name>GetFlight</display-name>
@@ -97,17 +96,25 @@
     <servlet-name>GetFlight</servlet-name>
     <url-pattern>/GetFlight</url-pattern>
   </servlet-mapping>
-
   <servlet>
-  	<description></description>
-  	<display-name>ReservationServlet</display-name>
-  	<servlet-name>ReservationServlet</servlet-name>
-  	<servlet-class>servlets.ReservationServlet</servlet-class>
-  	<load-on-startup>1</load-on-startup>
+    <description></description>
+    <display-name>ReservationServlet</display-name>
+    <servlet-name>ReservationServlet</servlet-name>
+    <servlet-class>servlets.ReservationServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
   </servlet>
   <servlet-mapping>
-  	<servlet-name>ReservationServlet</servlet-name>
-  	<url-pattern>/ReservationServlet</url-pattern>
+    <servlet-name>ReservationServlet</servlet-name>
+    <url-pattern>/ReservationServlet</url-pattern>
   </servlet-mapping>
-  
+  <servlet>
+    <description></description>
+    <display-name>ReservationsServlet</display-name>
+    <servlet-name>ReservationsServlet</servlet-name>
+    <servlet-class>servlets.ReservationsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ReservationsServlet</servlet-name>
+    <url-pattern>/ReservationsServlet</url-pattern>
+  </servlet-mapping>
 </web-app>

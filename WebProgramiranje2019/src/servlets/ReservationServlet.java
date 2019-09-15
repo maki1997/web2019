@@ -28,6 +28,7 @@ public class ReservationServlet extends HttpServlet {
 	}
 	
 	
+
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String status = (String) request.getAttribute("status");

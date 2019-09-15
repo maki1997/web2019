@@ -70,8 +70,9 @@ public class ReservationDAO {
 			pstmt.setInt(index++, userId);
 			rset = pstmt.executeQuery();
 			
-			index = 1;
+			
 			while (rset.next()) {
+				index = 1;
 				int flight_id = rset.getInt(index++);
 				Flight startFlight = FlightDAO.getFlightById(rset.getInt(index++));
 				Flight endFlight = FlightDAO.getFlightById(rset.getInt(index++));
@@ -120,8 +121,9 @@ public class ReservationDAO {
 			pstmt.setInt(index++, flightId);
 			rset = pstmt.executeQuery();
 			
-			index = 1;
+			
 			while (rset.next()) {
+				index = 1;
 				int flight_id = rset.getInt(index++);
 				Flight startFlight = FlightDAO.getFlightById(rset.getInt(index++));
 				Flight endFlight = FlightDAO.getFlightById(rset.getInt(index++));
