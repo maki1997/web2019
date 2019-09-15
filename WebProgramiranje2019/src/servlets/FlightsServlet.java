@@ -75,7 +75,37 @@ public class FlightsServlet extends HttpServlet {
 				
 				Flight f = FlightDAO.getFlightById(idF);
 				f.setDeleted(true);
-				//FlightDAO.Update(f);
+				FlightDAO.Update(f);
+				
+				/*ArrayList<Ticket> tickets =TicketsDAO.getUsersTickets(user.getId());
+				for(Ticket t: tickets) {
+					t.setDeleted(true);
+					TicketsDAO.updateTicket(t);
+				}*/
+				
+				
+				Map<String, Object> data = new HashMap<>();
+				data.put("status", "success");
+				data.put("loggedUser", loggedInUser);
+				ObjectMapper mapper = new ObjectMapper();
+				String jsonData = mapper.writeValueAsString(data);
+				
+				response.setContentType("application/json");
+				response.getWriter().write(jsonData);
+
+			} catch (Exception e) {
+				System.out.println(e);
+			}
+			break;
+		case "edit":
+			try {
+				HttpSession session = request.getSession();
+				User loggedInUser = (User) session.getAttribute("loggedInUser");
+				int idF = Integer.parseInt(request.getParameter("idF"));
+				
+				Flight f = FlightDAO.getFlightById(idF);
+				
+				FlightDAO.Update(f);
 				
 				/*ArrayList<Ticket> tickets =TicketsDAO.getUsersTickets(user.getId());
 				for(Ticket t: tickets) {

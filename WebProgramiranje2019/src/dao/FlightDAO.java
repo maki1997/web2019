@@ -12,7 +12,6 @@ import java.sql.PreparedStatement;
 import model.Airport;
 import model.Flight;
 import model.User;
-import model.User.Role;
 
 public class FlightDAO {
 	
@@ -67,6 +66,40 @@ public class FlightDAO {
 				}
 			}
 			return flights;
+		}
+		
+		public static boolean Update(Flight flight ) {
+			Connection conn = ConnectionManager.getConnection();
+			PreparedStatement pstmt = null;
+			try {
+				String query = "UPDATE flights SET  flightNumber = ?, startAirport = ?, endAirport = ?,startDate = ?,endDate = ?, numberOfSeats = ?, ticketPrice = ?, deleted = ?  WHERE id=?; ";
+
+				pstmt = conn.prepareStatement(query);
+				int index = 1;
+				pstmt.setString(index++, flight.getFlightNumber());
+				pstmt.setInt(index++, flight.getStartAirport().getId());
+				pstmt.setInt(index++, flight.getEndAirport().getId());
+				Date sDate=flight.getStartDate();
+				java.sql.Date startDate=new java.sql.Date(sDate.getTime());
+				Date eDate=flight.getEndDate();
+				java.sql.Date endDate=new java.sql.Date(eDate.getTime());
+				pstmt.setDate(index++, startDate );
+				pstmt.setDate(index++, endDate );
+				System.out.println(flight.getStartAirport().getId());
+				
+				pstmt.setInt(index++, flight.getNumberOfSeats());
+				pstmt.setDouble(index++,flight.getTicketPrice());
+				pstmt.setBoolean(index++, flight.isDeleted());
+				pstmt.setInt(index++, flight.getId());
+				return pstmt.executeUpdate() == 1;
+			} catch (SQLException ex) {
+				System.out.println("Greska u SQL upitu!");
+				ex.printStackTrace();
+			} finally {
+				// zatvaranje naredbe i rezultata
+				try {pstmt.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+			}
+			return false;
 		}
 		
 		

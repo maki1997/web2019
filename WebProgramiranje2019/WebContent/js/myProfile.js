@@ -54,12 +54,24 @@ $('document').ready(function(e){
     	console.log(params);
     	$.post('UserServlet',params,function(data){
 			if(data.status=="success"){
+				
 				$("#successfulEdit").modal("toggle");
-				//$.get('LogOutServlet',function(){});
+				//logout();
+				
 			}
+			
 		});
-
+    	
 		event.preventDefault();
 		return false;
     });
+	
+	
 });
+
+function logout(){
+	console.log('logout');
+	$.get('LogOutServlet',{},function(){
+		
+	});
+}

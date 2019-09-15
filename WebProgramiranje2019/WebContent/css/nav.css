@@ -43,3 +43,7 @@ footer p{
     font-size: 11;
     color: white;
 }
+#loggeduser{
+	font-weight:bold;
+	color:red;
+}

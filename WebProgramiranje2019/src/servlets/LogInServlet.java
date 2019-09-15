@@ -51,6 +51,7 @@ public class LogInServlet extends HttpServlet {
 			if (user == null) throw new Exception("Invalid username or password!!!");
 			if (!user.getPassword().equals(password)) throw new Exception("Invalid username or password!!!");
 			if(user.isDeleted() == true) throw new Exception("The user is deleted!!!");
+			if(user.isBlocked() == true) throw new Exception("The user is blocked!!!");
 			HttpSession session = request.getSession();
 			session.setAttribute("loggedInUser", user);
 		} catch (Exception ex) {
