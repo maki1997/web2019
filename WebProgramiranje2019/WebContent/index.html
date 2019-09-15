@@ -116,6 +116,30 @@
             </div>
         </div>
         
+        <div class="modal fade" id="editModal" role="dialog" >
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Update flight</h5>
+                    </div>
+                    <div class="modal-body">
+            <p>End airport:</p>
+            <select id="eaadd" class="form-control" required><option value="Beograd">Beograd</option><option value="Tokyo">Tokyo</option><option value="London">London</option><option value="New York">New York</option></select>
+          	<p>End date:</p>
+          	<input type="date" class="form-control" id="edadd" required>
+          	<p>Number of seats:</p>
+            <input type="number" class="form-control" placeholder="Number of seats" name="nos" id="nosadd" required>
+            <p>Price(€):</p>
+            <input type="number" class="form-control" placeholder="Price" name="price" id="priceadd" required>
+          </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                        <a class="btn btn-danger" id="editflight">Update</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <div class="modal fade" id="flightModal">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
