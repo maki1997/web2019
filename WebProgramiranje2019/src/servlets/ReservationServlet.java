@@ -157,17 +157,8 @@ public class ReservationServlet extends HttpServlet {
 		 * 2) getEndFlightSeat
 		 * 3) firstname
 		 * 4) lastname 
-		 * 
-		 * 
-		 * Get all attributes from request
-		 * Check if != null
-		 * 
-		 * 
-		 * 
 		**/
-		
 	}
-	
 	
 	
 	private void getReservationsByFlight(HttpServletRequest request, HttpServletResponse response) throws IOException{
@@ -177,6 +168,8 @@ public class ReservationServlet extends HttpServlet {
 		
 		int flightId = (int) request.getAttribute("flightId");
 		// flightId != null
+		
+		
 		
 		List<Reservation> reservations = ReservationDAO.getByStartFlight(flightId);
 		
@@ -188,7 +181,6 @@ public class ReservationServlet extends HttpServlet {
 		response.setContentType("application/json");
 		response.getWriter().write(jsonData);
 		response.setStatus(200);
-		
 		
 	}
 }

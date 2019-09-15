@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -221,8 +222,49 @@ public class FlightsServlet extends HttpServlet {
 			response.setContentType("application/json");
 			response.getWriter().write(jsonData);	
 			break;
-			
+		case "searchByDestination":
+			searchByDestination(request, response);
+			break;
+		case "getTakenSeats":
+			getTakenSeats(request, response);
+			break;
+		}
+	}
+	
+	private void searchByDestination(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		User loggedUser = (User) request.getSession().getAttribute("loggedUser");
+		// check if user is logged in
+		// check if user is authorized to execute get by flight 
 		
+		String startAirport = (String) request.getAttribute("startAirport");
+		String endAirport = (String) request.getAttribute("endAirport");
+		List<Flight> flights = FlightDAO.searchByAirports(startAirport, endAirport);
+		
+		Map<String, Object> data = new HashMap<>();
+		data.put("loggedUser", loggedUser);
+		data.put("flights", flights);
+		ObjectMapper mapper = new ObjectMapper();
+		String jsonData = mapper.writeValueAsString(data);
+		response.setContentType("application/json");
+		response.getWriter().write(jsonData);	
 	}
+	
+	private void getTakenSeats(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		User loggedUser = (User) request.getSession().getAttribute("loggedUser");
+		// check if user is logged in
+		// check if user is authorized to execute get by flight 
+
+		int flightId = (int) request.getAttribute("flightId");
+		int seatNum = (int) request.getAttribute("seatNum");
+		List<Integer> takenSeats = FlightDAO.getTakenSeats(flightId);
+		
+		Map<String, Object> data = new HashMap<>();
+		data.put("loggedUser", loggedUser);
+		data.put("available", takenSeats.contains(seatNum));
+		ObjectMapper mapper = new ObjectMapper();
+		String jsonData = mapper.writeValueAsString(data);
+		response.setContentType("application/json");
+		response.getWriter().write(jsonData);	
 	}
+	
 }
