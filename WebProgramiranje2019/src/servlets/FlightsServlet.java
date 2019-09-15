@@ -18,7 +18,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dao.AirportDAO;
 import dao.FlightDAO;
-import dao.UserDAO;
 import model.Airport;
 import model.Flight;
 import model.User;

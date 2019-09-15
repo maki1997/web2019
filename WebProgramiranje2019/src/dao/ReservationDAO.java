@@ -110,9 +110,13 @@ public class ReservationDAO {
 		List<Reservation> reservations = new ArrayList<>();
 
 		try {
-			String query = "SELECT * FROM reservations WHERE startFlight = ? AND deleted = 0;";
+			String query = "SELECT * FROM reservations WHERE startFlight = ? AND deleted = 0 " +
+					       "UNION " +
+					       "SELECT * FROM reservations WHERE endFlight = ? AND deleted = 0";
+
 			int index = 1;
 			pstmt = conn.prepareStatement(query);
+			pstmt.setInt(index++, flightId);
 			pstmt.setInt(index++, flightId);
 			rset = pstmt.executeQuery();
 			
@@ -150,8 +154,7 @@ public class ReservationDAO {
 	
 	
 
-	public static void add(Flight startFlight, Flight endFlight, int startFlightSeat, int endFlightSeat, User passenger,
-			String firstname, String lastname) {
+	public static void add(Reservation r) {
 		Connection conn = ConnectionManager.getConnection();
 		
 		PreparedStatement pstmt = null;
@@ -159,15 +162,15 @@ public class ReservationDAO {
 			String query = "INSERT INTO reservations (startFlight, endFlight, startFlightSeat, endFlightSeat, reservationDate, ticketSaleDate, passenger, passengerFirstName, passengerLastName) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
 			int index = 1;
 			pstmt = conn.prepareStatement(query);
-			pstmt.setInt(index++, startFlight.getId());
-			pstmt.setInt(index++, endFlight.getId());
-			pstmt.setInt(index++, startFlightSeat); 
-			pstmt.setInt(index++, endFlightSeat);
-			pstmt.setDate(index++, new Date(startFlight.getStartDate().getTime()));
+			pstmt.setInt(index++, r.getStartFlight().getId());
+			pstmt.setInt(index++, r.getEndFlight().getId());
+			pstmt.setInt(index++, r.getStartFlightSeat()); 
+			pstmt.setInt(index++, r.getEndFlightSeat());
+			pstmt.setDate(index++, new Date(r.getStartFlight().getStartDate().getTime()));
 			pstmt.setDate(index++, new Date(new java.util.Date().getTime()));
-			pstmt.setInt(index++, passenger.getId());
-			pstmt.setString(index++, firstname);
-			pstmt.setString(index++, lastname);
+			pstmt.setInt(index++, r.getPassenger().getId());
+			pstmt.setString(index++, r.getPassengerFirstname());
+			pstmt.setString(index++, r.getPassengerLastname());
 			pstmt.execute();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -185,35 +188,16 @@ public class ReservationDAO {
 		PreparedStatement pstmt = null;
 		
 		try {
-			String query = "UPDATE reservations SET startFlightSeat = ?, endFlightSeat = ?, passengerFirstName = ?, passengerLastName = ? WHERE id = ? AND deleted = 0;";
+			String query = "UPDATE reservations SET startFlightSeat = ?, endFlightSeat = ?, ticketSaleDate = ?, passengerFirstName = ?, passengerLastName = ?, deleted = ? WHERE id = ? AND deleted = 0;";
 			int index = 1;
 			pstmt = conn.prepareStatement(query);
 			pstmt.setInt(index++, reservation.getStartFlightSeat()); 
 			pstmt.setInt(index++, reservation.getEndFlightSeat());
+			pstmt.setDate(index++, new Date(reservation.getTicketSaleDate().getTime()));
 			pstmt.setString(index++, reservation.getPassengerFirstname());
 			pstmt.setString(index++, reservation.getPassengerLastname());
+			pstmt.setBoolean(index++, reservation.isDeleted());
 			pstmt.setInt(index++, reservation.getId());
-			pstmt.execute();
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-		} finally {
-			try {
-				pstmt.close(); 
-			} catch (SQLException ex) {
-				ex.printStackTrace();
-			}
-		}
-	}
-
-	public static void cancel(int id) {
-		Connection conn = ConnectionManager.getConnection();
-		PreparedStatement pstmt = null;
-		
-		try {
-			String query = "UPDATE reservations SET deleted = 1 WHERE id = ?;";
-			int index = 1;
-			pstmt = conn.prepareStatement(query);
-			pstmt.setInt(index++, id);
 			pstmt.execute();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
