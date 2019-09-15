@@ -1,17 +1,15 @@
 package dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
-
-import java.sql.Connection;
-
-import java.sql.PreparedStatement;
+import java.util.List;
 
 import model.Airport;
 import model.Flight;
-import model.User;
 
 public class FlightDAO {
 	
@@ -334,5 +332,44 @@ public class FlightDAO {
 			}
 			return flights;
 		}
+		
+		
+		
+		
+		
+	public static List<Integer> getTakenSeats(int flightId) {
+		Connection conn = ConnectionManager.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		List<Integer> takenSeats = new ArrayList<>();
+		
+		try {
+			String query = "SELECT startFlightSeat from reservations WHERE startFlight = ? AND deleted = 0 " +
+		                   "UNION " + 
+					       "SELECT endFlightSeat from reservations WHERE endFlight = ? AND deleted = 0;";
+			int index = 1;
+			pstmt = conn.prepareStatement(query);
+			pstmt.setInt(index++, flightId); 
+			pstmt.setInt(index++, flightId);
+			rset = pstmt.executeQuery();
+			
+			while (rset.next()) {
+				takenSeats.add(rset.getInt(1));
+			}
+			
+			return takenSeats;
+			
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			try {
+				pstmt.close(); 
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}
+		}
+		
+		return null;
+	}
 
 }
