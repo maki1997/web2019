@@ -34,6 +34,19 @@ public class Flight {
 		this.ticketPrice = ticketPrice;
 		this.deleted = deleted;
 	}
+	
+	public Flight(String flightNumber, Date startDate, Date endDate, Airport startAirport, Airport endAirport,
+			int numberOfSeats, double ticketPrice, boolean deleted) {
+		super();
+		this.flightNumber = flightNumber;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.startAirport = startAirport;
+		this.endAirport = endAirport;
+		this.numberOfSeats = numberOfSeats;
+		this.ticketPrice = ticketPrice;
+		this.deleted = deleted;
+	}
 
 
 	public int getId() {

@@ -1,0 +1,19 @@
+#users{
+	height:100%;
+	width:100%;
+	margin-top:5%;
+}
+
+body { 
+        
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+}
+body{
+    position: relative;
+    text-align: center;
+    height:95%%;
+	width:100%%;   
+}

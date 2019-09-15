@@ -1,0 +1,17 @@
+$('document').ready(function(e){
+	
+	var username=$('#username');
+	var name=$('#password');
+	var userName =$('#loggeduser').value();
+	
+	$.get('UserServlet',{'userName':userName},function(data){
+		if(data.status == 'blocked'){
+			$('.mainDiv').hide();
+		}
+		username.text(data.user.username);
+		password.text(data.user.password);
+		$('.changeActive').click(function(){
+	        $('.active').removeClass('active');
+	        $(this).addClass('active');
+	    });
+	});

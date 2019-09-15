@@ -1,0 +1,100 @@
+$(document).ready(function(e) {
+	var userName= "";
+	var content=$('#usersBody');
+ 	$.get('UsersServlet',{},function(data){
+ 		for (u in data.users) {
+ 			console.log(data.users[u].username);
+ 			if(data.user != null){
+ 				userName = data.user.username;
+ 			}
+ 			content.append('<tr><td>' + data.users[u].username + '</td><td>' + data.users[u].role + '</td><td><a id="delete" href="#deleteModal" type="button" data-toggle="modal"  data-book-id="'+data.users[u].username+'">Delete user</a></td></tr>');
+
+ 			
+ 		}
+ 		if(data.user != null){
+ 			var y = document.getElementById("navBarNotLogIn");
+ 		    y.style.display = "none";
+ 		    var y = document.getElementById("navBarLogIn");
+ 		    y.style.display = "block";
+ 		    //var userPage =document.getElementById("userPage");
+ 		    //userPage.setAttribute('href','user.html?username='+ data.user.username);
+ 		    //var adminPage =$("#adminPage");
+ 		    //if(data.user.role != "ADMIN"){
+ 		    	//adminPage.hide();
+ 		    //}
+ 		    $("#loggeduser").text(data.user.username)
+ 		    
+ 		}else{
+ 			var y = document.getElementById("navBarNotLogIn");
+ 		    y.style.display = "block";
+ 		    var y = document.getElementById("navBarLogIn");
+ 		    y.style.display = "none";
+ 		}
+ 		
+ 		
+
+ 	});
+ 	
+ 	$('#deleteModal').on('show.bs.modal',function(event){
+		 var username = $(event.relatedTarget).data('book-id');
+		 document.getElementById("deleteuser").setAttribute("name", username);
+		 
+	});
+	
+	$('#deleteuser').on('click',function(event){
+   	var userName=$(this).attr('name');
+   	$.post('UsersServlet',{'userName':userName,'status':"delete",},function(data){
+   		console.log(data.loggedUser);
+   		if(userName == data.loggedUser.username){
+   			$.get('LogOutServlet',{},function(){
+					
+				});
+   		}else{
+   			$('#user'+userName).remove();
+   		}
+   	});
+   	$('#deleteModal').modal('toggle');
+   	content.empty();
+   	$.get('UsersServlet',{},function(data){
+ 		for (u in data.users) {
+ 			console.log(data.users[u].username);
+ 			if(data.user != null){
+ 				userName = data.user.username;
+ 			}
+ 			content.append('<tr><td>' + data.users[u].username + '</td><td>' + data.users[u].role + '</td><td><a id="delete" href="#deleteModal" type="button" data-toggle="modal"  data-book-id="'+data.users[u].username+'">Delete user</a></td></tr>');
+
+ 			
+ 		}
+   	});
+   });
+	
+	$('#order').on('click',function(event){
+    	var desc=$('#desc');
+    	var asc=$('#asc');
+    	var column=$('#orderUsers').val();
+		var ascDesc=asc.val();
+		if(desc.is(':checked')){
+			var ascDesc=desc.val();
+		}
+		$.post('UsersServlet',{'status':"order",'ascDesc':ascDesc,'column':column},function(data){
+			if(data.stat=="success"){
+				content.empty();
+				for(u in data.users){content.append('<tr><td>' + data.users[u].username + '</td><td>' + data.users[u].role + '</td><td><a id="delete" href="#deleteModal" type="button" data-toggle="modal"  data-book-id="'+data.users[u].username+'">Delete user</a></td></tr>');;}
+			}
+		});
+		event.preventDefault();
+		return false;
+	});
+    $('#filterSubmitUsers').on('click',function(event){
+ 		var param1 = $('#filterParameters').val().trim();
+ 		var param = '%'+param1+'%';
+ 		$.post('UsersServlet',{'status':"filter",'param':param},function(data){
+			if(data.stat=="success"){
+				content.empty();
+				for(u in data.users){content.append('<tr><td>' + data.users[u].username + '</td><td>' + data.users[u].role + '</td><td><a id="delete" href="#deleteModal" type="button" data-toggle="modal"  data-book-id="'+data.users[u].username+'">Delete user</a></td></tr>');;}
+			}
+		});
+ 		event.preventDefault();
+		return false;
+ 	});
+});

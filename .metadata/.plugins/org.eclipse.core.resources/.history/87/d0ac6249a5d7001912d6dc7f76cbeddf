@@ -1,0 +1,34 @@
+$('document').ready(function(e){
+	
+	var username=$('#username');
+	var password=$('#password');
+	var userName =$('#loggeduser').val();
+	
+	$.get('UserServlet',{'userName':userName},function(data){
+		if(data.status == 'blocked'){
+			$('.mainDiv').hide();
+		}
+		username.val(data.user.username);
+		password.val(data.user.password);
+		
+	});
+	
+	$('#update').on('click',function(event){
+    	var username1=$('#username').val().trim();
+    	var password1=$('#password').val().trim();
+    	var params={
+				'password':password1,
+				'role':'USER',
+				'status':'edit',
+				'userName':username1
+			};
+    	$.post('UserServlet',params,function(data){
+			if(data.status=="success"){
+				$("#successfulEdit").modal("toggle");
+			}
+		});
+
+		event.preventDefault();
+		return false;
+    });
+});

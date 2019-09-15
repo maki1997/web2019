@@ -181,10 +181,11 @@ public class UserDAO {
 		Connection conn = ConnectionManager.getConnection();
 		PreparedStatement pstmt = null;
 		try {
-			String query = "UPDATE users SET  password = ?,  role = ?, blocked = ?,deleted = ?  WHERE id=?; ";
+			String query = "UPDATE users SET  userName = ?, password = ?,  role = ?, blocked = ?,deleted = ?  WHERE id=?; ";
 
 			pstmt = conn.prepareStatement(query);
 			int index = 1;
+			pstmt.setString(index++, user.getUsername());
 			pstmt.setString(index++, user.getPassword());
 			pstmt.setString(index++, user.getRole().toString());
 			pstmt.setBoolean(index++, user.isBlocked());

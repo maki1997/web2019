@@ -1,0 +1,6 @@
+<div id="users">
+        <table class="table table-hover">
+        <thead><tr><th> Username </th> </tr></thead>
+        <tbody id="flightsBody"></tbody>
+        </table>
+</div>

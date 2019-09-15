@@ -43,6 +43,8 @@ public class RegisterServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
+		System.out.println("kor ime" + username);
+		System.out.println(password);
 		String status = "";
 		
 		User user = UserDAO.getByUserName(username);

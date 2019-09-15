@@ -1,0 +1,38 @@
+$(document).ready(function(e) {
+	var userName= "";
+	var content=$('.row');
+	
+ 	$.get('VideosServlet',{},function(data){
+ 		for (v in data.videos) {
+ 			console.log(data.videos);
+ 			if(data.user != null){
+ 				userName = data.user.username;
+ 			}
+ 			content.append('<div class="col-md-4"><a href="video.html?id='+ data.videos[v].id +'" target="_self" ><img id="videoImage" src="./pictures/'+ data.videos[v].thumbnail +'.jpg" alt="video" style="width:40% "><div class="caption"><p id="titleBar">'+ data.videos[v].name +'</p></div><p id="videoInfo"><a href="user.html?username='+ data.videos[v].owner.username +'" id="userName">'+ data.videos[v].owner.username  + '</a><br>'+'Previews:'+ data.videos[v].previews +'<br>'+ 'Date:'+ format(data.videos[v].date) +'</p></a></div>');
+
+ 			
+ 		}
+ 		if(data.user != null){
+ 			var y = document.getElementById("navBarNotLogIn");
+ 		    y.style.display = "none";
+ 		    var y = document.getElementById("navBarLogIn");
+ 		    y.style.display = "block";
+ 		    var userPage =document.getElementById("userPage");
+ 		    userPage.setAttribute('href','user.html?username='+ data.user.username);
+ 		    var adminPage =$("#adminPage");
+ 		    if(data.user.role != "ADMIN"){
+ 		    	adminPage.hide();
+ 		    }
+ 		    $("#loggeduser").text(data.user.username)
+ 		    
+ 		}else{
+ 			var y = document.getElementById("navBarNotLogIn");
+ 		    y.style.display = "block";
+ 		    var y = document.getElementById("navBarLogIn");
+ 		    y.style.display = "none";
+ 		}
+ 		
+ 		
+
+ 	});
+});

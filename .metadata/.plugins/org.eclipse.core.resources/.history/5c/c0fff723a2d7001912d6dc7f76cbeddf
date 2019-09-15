@@ -1,0 +1,24 @@
+$('document').ready(function(e){
+	
+	var username=$('#username');
+	var name=$('#password');
+	
+	$.get('UserServlet',{'userName':loggedInUser.username},function(data){
+		if(data.status == 'blocked'){
+			$('.mainDiv').hide();
+			blockInfo();
+		}
+		username.text(data.owner.username);
+		name.text('Name: '+data.owner.name);
+		lname.text('LastName: '+data.owner.surname);
+		date.text('Date: '+ format(data.owner.date));
+		desc.text('Description: '+data.owner.description);
+		subsNumber.text(data.subNumber + '  followers');
+		email.text('Email: '+data.owner.email);
+		role.text('Role in site: '+data.owner.role);
+		block.text('Block status: ' + data.owner.blocked)
+		$('.changeActive').click(function(){
+	        $('.active').removeClass('active');
+	        $(this).addClass('active');
+	    });
+	});

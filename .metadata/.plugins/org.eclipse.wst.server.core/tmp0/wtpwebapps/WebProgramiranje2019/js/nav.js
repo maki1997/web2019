@@ -6,7 +6,7 @@ $('document').ready(function(e){
 		if(username == '' || password == '')
 			$("#login-modal").modal('toggle');
 
-		$.post('WebProgramiranje2019/LogInServlet', {'username': username, 'password': password}, function(data) { 
+		$.post('LogInServlet', {'username': username, 'password': password}, function(data) { 
 			if (data.status == 'success') {
 				window.location.replace('index.html');
 			}

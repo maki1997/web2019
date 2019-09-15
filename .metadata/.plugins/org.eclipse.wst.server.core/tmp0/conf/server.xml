@@ -135,7 +135,7 @@
                prefix="localhost_access_log." suffix=".txt" pattern="common" resolveHosts="false"/>
         -->
 
-      <Context docBase="C:\Users\Maki\Desktop\novoWebProg\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\ROOT" path="" reloadable="false"/><Context docBase="C:\Users\Maki\Desktop\novoWebProg\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\WebProgramiranje2019" path="/WebProgramiranje2019" reloadable="true" source="org.eclipse.jst.jee.server:WebProgramiranje2019"/></Host>
+      <Context docBase="C:\Users\Maki\Desktop\web2019\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\ROOT" path="" reloadable="false"/><Context docBase="C:\Users\Maki\Desktop\web2019\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\WebProgramiranje2019" path="/WebProgramiranje2019" reloadable="true" source="org.eclipse.jst.jee.server:WebProgramiranje2019"/></Host>
     </Engine>
   </Service>
 </Server>

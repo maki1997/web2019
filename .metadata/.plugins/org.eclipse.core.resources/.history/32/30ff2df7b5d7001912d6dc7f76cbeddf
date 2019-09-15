@@ -1,0 +1,112 @@
+$(document).ready(function(e) {
+	var userName= "";
+	var content=$('#flightsBody');
+	$('#addFButton').on('click',function(event){$('#flightModal').modal('toggle');
+ 	$.get('FlightsServlet',{},function(data){
+ 		for (f in data.flights) {
+ 			console.log(data.flights[f].startAirport.name);
+ 			if(data.user != null){
+ 				userName = data.user.username;
+ 			}
+ 			content.append('<tr><td>' + data.flights[f].flightNumber + '</td><td>' + data.flights[f].startAirport.name + '</td><td>' + data.flights[f].endAirport.name + '</td><td>' + format(data.flights[f].startDate) + '</td><td>' + format(data.flights[f].endDate) + '</td><td>' + data.flights[f].numberOfSeats + '</td><td>' + data.flights[f].ticketPrice + '</td></tr>');
+
+ 			
+ 		}
+ 		if(data.user != null){
+ 			var y = document.getElementById("navBarNotLogIn");
+ 		    y.style.display = "none";
+ 		    var y = document.getElementById("navBarLogIn");
+ 		    y.style.display = "block";
+ 		    //var userPage =document.getElementById("userPage");
+ 		    //userPage.setAttribute('href','user.html?username='+ data.user.username);
+ 		    var adminPage =$("#adminPage");
+ 		    if(data.user.role != "ADMIN"){
+ 		    	adminPage.hide();
+ 		    	$('#addFButton').hide;
+ 		    }
+ 		    $("#loggeduser").text(data.user.username)
+ 		    
+ 		}else{
+ 			var y = document.getElementById("navBarNotLogIn");
+ 		    y.style.display = "block";
+ 		    var y = document.getElementById("navBarLogIn");
+ 		    y.style.display = "none";
+ 		}
+ 		
+ 		
+
+ 	});
+ 	
+ 	$('#addFlightSubmit').on('click',function(event){
+ 		var dataa=new FormData();
+ 		var fn =$('#flight_number').val();
+ 		var sa =$('#sa').val();
+ 		var la =$('#ea').val();
+ 		var sd =$('#sd').val();
+ 		var ed =$('#ed').val();
+ 		var nos =$('#nos').val();
+ 		var price =$('#price').val();
+ 		dataa.append('flightNumber',fn);
+ 		dataa.append('sAirport',sa);
+ 		dataa.append('eAirport',ea);
+ 		dataa.append('sDate',sd);
+ 		dataa.append('eDate',ed);
+ 		dataa.append('numberOfSeats',nos);
+ 		dataa.append('price',price);
+	   	$.post('FlightsServlet',{'flightNumber':fn,'sAirport':sa,'eAirport':ea,'sDate':sd,'eDate':ea,'numberOfSeats':nos,'price':price,'status':"add",},function(data){
+	   		console.log(data);
+	   	});
+	   	$('#flightModal').modal('toggle');
+	   	content.empty();
+	   	$.get('FlightsServlet',{},function(data){
+	 		for (f in data.flights) {
+	 			console.log(data.flights[f].startAirport.name);
+	 			if(data.user != null){
+	 				userName = data.user.username;
+	 			}
+	 			content.append('<tr><td>' + data.flights[f].flightNumber + '</td><td>' + data.flights[f].startAirport.name + '</td><td>' + data.flights[f].endAirport.name + '</td><td>' + format(data.flights[f].startDate) + '</td><td>' + format(data.flights[f].endDate) + '</td><td>' + data.flights[f].numberOfSeats + '</td><td>' + data.flights[f].ticketPrice + '</td></tr>');
+
+	 			
+	 		}
+	 		if(data.user != null){
+	 			var y = document.getElementById("navBarNotLogIn");
+	 		    y.style.display = "none";
+	 		    var y = document.getElementById("navBarLogIn");
+	 		    y.style.display = "block";
+	 		    //var userPage =document.getElementById("userPage");
+	 		    //userPage.setAttribute('href','user.html?username='+ data.user.username);
+	 		    var adminPage =$("#adminPage");
+	 		    if(data.user.role != "ADMIN"){
+	 		    	adminPage.hide();
+	 		    	$('#addFButton').hide;
+	 		    }
+	 		    $("#loggeduser").text(data.user.username)
+	 		    
+	 		}else{
+	 			var y = document.getElementById("navBarNotLogIn");
+	 		    y.style.display = "block";
+	 		    var y = document.getElementById("navBarLogIn");
+	 		    y.style.display = "none";
+	 		}
+	 		
+	 		
+
+	 	});
+	   	
+	   });
+ 	
+ 	function format(tempDate) {
+ 		var date = new Date(tempDate);
+ 		var day = date.getDate();
+ 		var monthIndex = date.getMonth();
+ 		var year = date.getFullYear();
+ 		var monthNames = [
+ 			  "January", "February", "March",
+ 			  "April", "May", "June", "July",
+ 			  "August", "September", "October",
+ 			  "November", "December"
+ 			];
+ 		
+ 		return day + '. ' + monthNames[monthIndex] + ' ' + year+'.';
+ 	}
+});

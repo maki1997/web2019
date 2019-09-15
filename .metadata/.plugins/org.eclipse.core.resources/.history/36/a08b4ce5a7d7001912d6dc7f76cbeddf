@@ -1,0 +1,60 @@
+$('document').ready(function(e){
+	
+	var username=$('#username');
+	var password=$('#password');
+	var userName;
+	var userName =$('#loggeduser').val();
+	
+
+	if(data.user != null){
+		var y = document.getElementById("navBarNotLogIn");
+	    y.style.display = "none";
+	    var y = document.getElementById("navBarLogIn");
+	    y.style.display = "block";
+	    //var userPage =document.getElementById("userPage");
+	    //userPage.setAttribute('href','user.html?username='+ data.user.username);
+	    var adminPage =$("#adminPage");
+	    if(data.user.role != "ADMIN"){
+	    	adminPage.hide();
+	    }
+	    $("#loggeduser").text(data.user.username)
+	    
+	}else{
+		var y = document.getElementById("navBarNotLogIn");
+	    y.style.display = "block";
+	    var y = document.getElementById("navBarLogIn");
+	    y.style.display = "none";
+	}
+	
+	$.get('UserServlet',{'userName':userName},function(data){
+		if(data.status == 'blocked'){
+			$('.mainDiv').hide();
+		}
+		username.val(data.user.username);
+		userName=(data.user.username);
+		password.val(data.user.password);
+		
+	});
+	
+	$('#update').on('click',function(event){
+    	var username1=$('#username').val().trim();
+    	var password1=$('#password').val().trim();
+    	console.log(username1);
+    	var params={
+				'password':password1,
+				'role':'USER',
+				'status':'edit',
+				'userName':username1,
+				'un':userName
+			};
+    	console.log(params);
+    	$.post('UserServlet',params,function(data){
+			if(data.status=="success"){
+				$("#successfulEdit").modal("toggle");
+			}
+		});
+
+		event.preventDefault();
+		return false;
+    });
+});

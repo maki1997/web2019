@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset=utf-8 content="width=device-width, initial-scale=1 maximum-scale=1, user-scalable=no">
+	<title>web</title>
+	<script src="js/jquery-2.1.4.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css"/>
+	<script src="bootstrap/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/users.css">
+	<link rel="stylesheet" type="text/css" href="css/nav.css">
+    <script type="text/javascript" src="js/nav.js"></script>
+    <script type="text/javascript" src="js/users.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-default navbar-fixed-top" style="background-color: #e3f2fd;">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="index.html">FlightCompany</a>
+			</div>
+				
+                    
+                    <ul class="nav navbar-nav navbar-right" id="navBarLogIn">
+                    	<li><a target="_self" href="airports.html"><span class="glyphicon glyphicon-plane"></span> Airports</a></li>
+                    	<li><a target="_self" id="adminPage" href="users.html"><span class="glyphicon glyphicon-user"></span> Users</a></li>
+                    	<li><a target="_self" href="index.html"><span class="glyphicon glyphicon-cloud"></span> Flights</a></li>
+                        <li><a target="_self" data-toggle="modal" href="#logoutModal"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>  
+                    	<li><p id="loggeduser"></p></li>
+                    	
+                    </ul>
+
+
+                    <ul class="nav navbar-nav navbar-right" id="navBarNotLogIn">
+                       
+                        <li>
+                        	<a  data-toggle="modal" href="#loginModal" >
+                        		<span class="glyphicon glyphicon-log-in"></span> Login</a>
+                        </li>
+                        <li>
+                        	<a href="registration.html"><span class="glyphicon glyphicon-user" ></span> Register</a>
+                        </li>
+                        
+                    </ul>
+				</div>
+			
+		
+	</nav>
+	<div class="modal fade" id="logoutModal" role="dialog" >
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">You ready to Leave?</h5>
+                    </div>
+                    <div class="modal-body">Select "Logout" below if you are ready to leave.</div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                        <a class="btn btn-danger" href="LogOutServlet" >Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="deleteModal" role="dialog" >
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Are you sure?</h5>
+                    </div>
+                    <div class="modal-body">Are you sure you want to delete this user?
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                        <a class="btn btn-danger" id="deleteuser">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    	
+    	<div class="form-group-sm">
+        	<div class="input-group" id="filterUsers">
+            	<input type="text" class="form-control" placeholder="Search..." autocomplete="off" id="filterParameters">
+            	<span class="input-group-btn">
+            	<button class="btn btn-danger btn-sm" id="filterSubmitUsers" >Search</button>
+            	</span>
+            </div>
+         </div>
+         
+         <button data-toggle="collapse" class="btn btn-default" data-target="#filter" id="btnFilter">Order<span class="glyphicon glyphicon-align-right"></span></button>
+         
+         <div id="filter" class="collapse">
+    		<ul>
+    			<li>Order by:</li>
+    			<li>
+    			 	<select id="orderUsers" name="order" class="form-control">
+						<option value="userName" >Username</option>
+						<option value="role">Role</option>
+					</select>
+				</li>
+				<li>
+					<label class="container-rb" >Ascending
+			  			<input type="radio" id="asc" value="ASC" checked="checked" name="radio">
+			  			<span class="checkmark"></span>
+					</label>
+				</li>
+				<li>
+					<label class="container-rb"  >Descending
+			  			<input type="radio" id="desc" value="DESC" name="radio">
+			  			<span class="checkmark"></span>
+					</label>
+				</li>
+				<li>
+					<input type="submit" value="Order" id="order">
+				</li>
+				
+    		</ul>
+    	</div>
+        
+        
+		<div id="users">
+        	<table class="table table-hover">
+        		<thead><tr><th> Username </th><th> Role </th><th></th> </tr></thead>
+        		<tbody id="usersBody"></tbody>
+        	</table>
+		</div>
+		
+		
+		
+</body>
+</html>

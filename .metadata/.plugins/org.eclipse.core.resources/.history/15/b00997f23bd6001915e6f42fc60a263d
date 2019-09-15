@@ -1,0 +1,37 @@
+$(document).ready(function(e) {
+	var userName= "";
+	var content=$('#flightsBody');
+ 	$.get('UsersServlet',{},function(data){
+ 		for (u in data.users) {
+ 			console.log(data.users[u].username);
+ 			if(data.user != null){
+ 				userName = data.user.username;
+ 			}
+ 			content.append('<tr><td>' + data.users[u].username + '</td></tr>');
+
+ 			
+ 		}
+ 		if(data.user != null){
+ 			var y = document.getElementById("navBarNotLogIn");
+ 		    y.style.display = "none";
+ 		    var y = document.getElementById("navBarLogIn");
+ 		    y.style.display = "block";
+ 		    //var userPage =document.getElementById("userPage");
+ 		    //userPage.setAttribute('href','user.html?username='+ data.user.username);
+ 		    //var adminPage =$("#adminPage");
+ 		    //if(data.user.role != "ADMIN"){
+ 		    	//adminPage.hide();
+ 		    //}
+ 		    $("#loggeduser").text(data.user.username)
+ 		    
+ 		}else{
+ 			var y = document.getElementById("navBarNotLogIn");
+ 		    y.style.display = "block";
+ 		    var y = document.getElementById("navBarLogIn");
+ 		    y.style.display = "none";
+ 		}
+ 		
+ 		
+
+ 	});
+});

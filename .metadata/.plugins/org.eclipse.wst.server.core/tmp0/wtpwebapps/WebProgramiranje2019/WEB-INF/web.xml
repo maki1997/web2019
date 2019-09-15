@@ -10,31 +10,80 @@
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
   <servlet>
-   <servlet-name>LogInServlet</servlet-name>
-   <servlet-class>WebProgramiranje2019.servlets.LogInServlet</servlet-class>
+    <servlet-name>LogInServlet</servlet-name>
+    <servlet-class>servlets.LogInServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>LogInServlet</servlet-name>
     <url-pattern>/LogInServlet</url-pattern>
   </servlet-mapping>
   <listener>
-    <listener-class>webProgramiranje2019.servlets.InitListener</listener-class>
+    <listener-class>servlets.InitListener</listener-class>
   </listener>
   <servlet>
-   <servlet-name>RegisterServlet</servlet-name>
-   <servlet-class>WebProgramiranje2019.servlets.RegisterServlet</servlet-class>
+    <servlet-name>RegisterServlet</servlet-name>
+    <servlet-class>servlets.RegisterServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>RegisterServlet</servlet-name>
     <url-pattern>/RegisterServlet</url-pattern>
   </servlet-mapping>
   <servlet>
-   <servlet-name>LogOutServlet</servlet-name>
-   <servlet-class>WebProgramiranje2019.servlets.LogOutServlet</servlet-class>
+    <servlet-name>LogOutServlet</servlet-name>
+    <servlet-class>servlets.LogOutServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>LogOutServlet</servlet-name>
     <url-pattern>/LogOutServlet</url-pattern>
   </servlet-mapping>
-  
+  <servlet>
+    <description></description>
+    <display-name>FlightsServlet</display-name>
+    <servlet-name>FlightsServlet</servlet-name>
+    <servlet-class>servlets.FlightsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FlightsServlet</servlet-name>
+    <url-pattern>/FlightsServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>UsersServlet</display-name>
+    <servlet-name>UsersServlet</servlet-name>
+    <servlet-class>servlets.UsersServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UsersServlet</servlet-name>
+    <url-pattern>/UsersServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>AirportsServlet</display-name>
+    <servlet-name>AirportsServlet</servlet-name>
+    <servlet-class>servlets.AirportsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AirportsServlet</servlet-name>
+    <url-pattern>/AirportsServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>UserServlet</display-name>
+    <servlet-name>UserServlet</servlet-name>
+    <servlet-class>servlets.UserServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UserServlet</servlet-name>
+    <url-pattern>/UserServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ProfileServlet</display-name>
+    <servlet-name>ProfileServlet</servlet-name>
+    <servlet-class>servlets.ProfileServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ProfileServlet</servlet-name>
+    <url-pattern>/ProfileServlet</url-pattern>
+  </servlet-mapping>
 </web-app>

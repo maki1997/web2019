@@ -1,0 +1,5 @@
+#flights{
+	background-color: green;
+	height:50%;
+	width:50%;
+}

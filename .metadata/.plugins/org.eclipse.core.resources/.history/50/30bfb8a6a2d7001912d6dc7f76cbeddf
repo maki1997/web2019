@@ -1,0 +1,15 @@
+$('document').ready(function(e){
+	
+	var username=$('#username');
+	var name=$('#password');
+	var userName =$('#loggeduser').val();
+	
+	$.get('UserServlet',{'userName':userName},function(data){
+		if(data.status == 'blocked'){
+			$('.mainDiv').hide();
+		}
+		username.val(data.user.username);
+		password.val(data.user.password);
+		
+	});
+});

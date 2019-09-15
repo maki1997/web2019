@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset=utf-8 content="width=device-width, initial-scale=1 maximum-scale=1, user-scalable=no">
+	<title>web</title>
+	<script src="js/jquery-2.1.4.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css"/>
+	<script src="bootstrap/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/registration.css">
+	<link rel="stylesheet" type="text/css" href="css/nav.css">
+    <script type="text/javascript" src="js/registration.js"></script>
+    <script type="text/javascript" src="js/nav.js"></script>
+</head>
+<body>
+	   <nav class="navbar navbar-default navbar-fixed-top" style="background-color: #e3f2fd;">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="index.html">FlightCompany</a>
+			</div>
+				
+                    
+                    <ul class="nav navbar-nav navbar-right" id="navBarLogIn">
+                    	<li><a target="_self" href="myProfile.html"><span class="glyphicon glyphicon-plane"></span> MyProfile</a></li>
+                    	<li><a target="_self" href="airports.html"><span class="glyphicon glyphicon-plane"></span> Airports</a></li>
+                    	<li><a target="_self" id="adminPage" href="users.html"><span class="glyphicon glyphicon-user"></span> Users</a></li>
+                    	<li><a target="_self" href="index.html"><span class="glyphicon glyphicon-cloud"></span> Flights</a></li>
+                        <li><a target="_self" data-toggle="modal" href="#logoutModal"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>  
+                    	<li><p id="loggeduser"></p></li>
+                    	
+                    </ul>
+
+
+                    <ul class="nav navbar-nav navbar-right" id="navBarNotLogIn">
+                       
+                        <li>
+                        	<a  data-toggle="modal" href="#loginModal" >
+                        		<span class="glyphicon glyphicon-log-in"></span> Login</a>
+                        </li>
+                        <li>
+                        	<a href="registration.html"><span class="glyphicon glyphicon-user" ></span> Register</a>
+                        </li>
+                        
+                    </ul>
+				</div>
+			
+		
+	</nav>
+
+        
+	<form action="RegisterServlet" method="post" enctype="multipart/form-data">
+		<div class="container">
+			<h1>Sign Up</h1>
+			<p>Fields with * are required</p>
+
+
+			<p><label><b>Username *</b></label></p>
+    		<input type="text" placeholder="Enter Username" name="userName" id="username" required>
+
+    		<p><label><b>Password *</b></label></p>
+    		<input type="password" placeholder="Enter Password" name="password" id="password" required>
+
+
+
+			<p id="message"></p>
+			<div class="btnGroup">
+      			<button type="submit" class="btn btn-danger"  id="submit">Sign Up</button>
+      			<button type="button" class="btn btn-danger" id="cancel" onclick="btnCancel()">Cancel</button>
+    		</div>
+		</div>
+
+	</form>
+
+</body>
+</html>
