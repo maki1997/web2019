@@ -236,8 +236,8 @@ public class FlightsServlet extends HttpServlet {
 		// check if user is logged in
 		// check if user is authorized to execute get by flight 
 		
-		String startAirport = (String) request.getAttribute("startAirport");
-		String endAirport = (String) request.getAttribute("endAirport");
+		String startAirport = (String) request.getParameter("startAirport");
+		String endAirport = (String) request.getParameter("endAirport");
 		List<Flight> flights = FlightDAO.searchByAirports(startAirport, endAirport);
 		
 		Map<String, Object> data = new HashMap<>();
@@ -254,8 +254,8 @@ public class FlightsServlet extends HttpServlet {
 		// check if user is logged in
 		// check if user is authorized to execute get by flight 
 
-		int flightId = (int) request.getAttribute("flightId");
-		int seatNum = (int) request.getAttribute("seatNum");
+		int flightId = Integer.parseInt(request.getParameter("flightId"));
+		int seatNum = Integer.parseInt(request.getParameter("seatNum"));
 		List<Integer> takenSeats = FlightDAO.getTakenSeats(flightId);
 		
 		Map<String, Object> data = new HashMap<>();
