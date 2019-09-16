@@ -69,7 +69,10 @@ public class ReservationServlet extends HttpServlet {
 	private void addReservation(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		User loggedUser = (User) request.getSession().getAttribute("loggedInUser");
 		// check if user is logged in
-		// check if user is authorized to execute add reservation
+		if (loggedUser == null) {
+			response.setStatus(400);
+			return;
+		}
 		
 		Integer startFlightId = Integer.parseInt( request.getParameter("startFlight"));	
 		Integer endFlightId = Integer.parseInt( request.getParameter("endFlight"));
@@ -79,13 +82,22 @@ public class ReservationServlet extends HttpServlet {
 		String lastname = (String) request.getParameter("lastname");
 		// check if all parameters are non null
 		
+		if (startFlightId == null || endFlightId == null || startFlightSeat == null || endFlightSeat == null || firstname == null || lastname == null) {
+			response.setStatus(400);
+			return;
+		}
+		
+		
 		Flight startFlight = FlightDAO.getFlightById(startFlightId);
 		Flight endFlight = FlightDAO.getFlightById(endFlightId);
 		// check if returned flights are non null
+		if (startFlight == null || endFlight == null) {
+			response.setStatus(400);
+			return;
+		}
 		
 		Reservation r = new Reservation(startFlight, endFlight, startFlightSeat, endFlightSeat, loggedUser, firstname, lastname);
 		ReservationDAO.add(r);
-		
 		
 		Map<String, Object> data = new HashMap<>();
 		data.put("user", loggedUser);
@@ -142,6 +154,7 @@ public class ReservationServlet extends HttpServlet {
 	
 	private void updateReservation(HttpServletRequest request, HttpServletResponse response) {
 		User loggedUser = (User) request.getSession().getAttribute("loggedInUser");
+		
 		// check if user is logged in
 		// check if user is authorized to update reservation
 		

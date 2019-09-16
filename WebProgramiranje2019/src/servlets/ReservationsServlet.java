@@ -47,8 +47,13 @@ public class ReservationsServlet extends HttpServlet {
 			//lista letova
 			HttpSession session = request.getSession();
 			User loggedInUser = (User) session.getAttribute("loggedInUser");
-			int userId = loggedInUser.getId();
-			int flightId = Integer.parseInt(request.getParameter("reservationId"));
+			if (loggedInUser == null) {
+				response.setStatus(400);
+				return;
+			}
+			
+			Integer userId = loggedInUser.getId();
+			Integer flightId = Integer.parseInt(request.getParameter("reservationId"));
 			System.out.println(flightId);
 			List<Reservation> res = ReservationDAO.getByUser(userId);
 			List<Reservation> res1 = ReservationDAO.getByStartFlight(flightId);
@@ -78,23 +83,32 @@ public class ReservationsServlet extends HttpServlet {
 		case "add":
 			User loggedUser = (User) request.getSession().getAttribute("loggedInUser");
 			// check if user is logged in
-			// check if user is authorized to execute add reservation
-			if(loggedUser == null) {
-				System.out.println("user je null");
+			if (loggedUser == null) {
+				response.setStatus(400);
+				return;
 			}
 			
-			int startFlightId = Integer.parseInt(request.getParameter("startFlight"));	
-			int endFlightId = Integer.parseInt(request.getParameter("endFlight"));
-			int startFlightSeat = Integer.parseInt(request.getParameter("startFlightSeat"));
-			int endFlightSeat = Integer.parseInt(request.getParameter("endFlightSeat"));
+			Integer startFlightId = Integer.parseInt(request.getParameter("startFlight"));	
+			Integer endFlightId = Integer.parseInt(request.getParameter("endFlight"));
+			Integer startFlightSeat = Integer.parseInt(request.getParameter("startFlightSeat"));
+			Integer endFlightSeat = Integer.parseInt(request.getParameter("endFlightSeat"));
 			String firstname = request.getParameter("firstname");
 			String lastname = request.getParameter("lastname");
 			System.out.println(startFlightId + endFlightId);
 			// check if all parameters are non null
+			if (startFlightId == null || endFlightId == null || startFlightSeat == null || endFlightSeat == null || firstname == null || lastname == null) {
+				response.setStatus(400);
+				return;
+			}
 			
 			Flight startFlight = FlightDAO.getFlightById(startFlightId);
 			Flight endFlight = FlightDAO.getFlightById(endFlightId);
 			// check if returned flights are non null
+			if (startFlight == null || endFlight == null) {
+				response.setStatus(400);
+				return;
+			}
+			
 			
 			Reservation r = new Reservation(startFlight, endFlight, startFlightSeat, endFlightSeat, loggedUser, firstname, lastname);
 			ReservationDAO.add(r);
@@ -111,18 +125,28 @@ public class ReservationsServlet extends HttpServlet {
 		case "delete":
 			User loggedUser1 = (User) request.getSession().getAttribute("loggedInUser");
 			// check if user is logged in
-			// check if user is authorized to execute add reservation
+			if (loggedUser1 == null || !loggedUser1.getRole().equals(User.Role.ADMIN)) {
+				response.setStatus(400);
+				return;
+			}
 			
-			int reservationId = Integer.parseInt(request.getParameter("idR"));
 			// check if id != null
-			
+			Integer reservationId = Integer.parseInt(request.getParameter("idR"));
 			Reservation reservation = ReservationDAO.getById(reservationId);
 			// check if reservation != null
-			// check if user owns reservation
+			if (reservation == null) {
+				response.setStatus(400);
+				return;
+			}
+			
+			// check if user is authorized to execute add reservation
+			if (loggedUser1.getId() != reservation.getPassenger().getId()) {
+				response.setStatus(400);
+				return;
+			}
 			
 			reservation.setDeleted(true);
 			ReservationDAO.update(reservation);
-			
 			
 			Map<String, Object> data1 = new HashMap<>();
 			data1.put("user", loggedUser1);
@@ -134,5 +158,5 @@ public class ReservationsServlet extends HttpServlet {
 			break;
 		}
 	}
-
+	
 }

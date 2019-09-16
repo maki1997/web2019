@@ -70,9 +70,18 @@ public class FlightsServlet extends HttpServlet {
 			try {
 				HttpSession session = request.getSession();
 				User loggedInUser = (User) session.getAttribute("loggedInUser");
-				int idF = Integer.parseInt(request.getParameter("idF"));
+				if (loggedInUser == null || !loggedInUser.getRole().equals(User.Role.ADMIN)) {
+					response.setStatus(400);
+					return;
+				}
 				
+				int idF = Integer.parseInt(request.getParameter("idF"));
 				Flight f = FlightDAO.getFlightById(idF);
+				if (f == null) {
+					response.setStatus(400);
+					return;
+				}
+				
 				f.setDeleted(true);
 				FlightDAO.Update(f);
 				
@@ -100,14 +109,24 @@ public class FlightsServlet extends HttpServlet {
 			try {
 				HttpSession session = request.getSession();
 				User loggedInUser = (User) session.getAttribute("loggedInUser");
-				int idF = Integer.parseInt(request.getParameter("idF"));
+				if (loggedInUser == null || !loggedInUser.getRole().equals(User.Role.ADMIN)) {
+					response.setStatus(400);
+					return;
+				}
 				
+				int idF = Integer.parseInt(request.getParameter("idF"));
 				Flight f = FlightDAO.getFlightById(idF);
+				if (f == null) {
+					response.setStatus(400);
+					return;
+				}
+				
 				System.out.println(f.getFlightNumber());
 				String endA = request.getParameter("endA");
 				System.out.println("naziv krajnjeg aerodroma"+endA);
 				Airport eA = AirportDAO.getByName(endA);
 				System.out.println(eA.getName());
+				
 				f.setEndAirport(eA);
 				Date date = null;
 				try {
@@ -118,10 +137,20 @@ public class FlightsServlet extends HttpServlet {
 				}
 				f.setEndDate(date);
 				System.out.println(date);
-				int nos = Integer.parseInt(request.getParameter("numofs"));
-				f.setNumberOfSeats(nos);
+				Integer nos = Integer.parseInt(request.getParameter("numofs"));
+				
 				System.out.println(nos);
-				double tp = Double.parseDouble(request.getParameter("p"));
+				Double tp = Double.parseDouble(request.getParameter("p"));
+				
+				if (nos == null || tp == null) {
+					response.setStatus(400);
+					return;
+				} else if (nos > 0 && tp > 0.0) {
+					response.setStatus(400);
+					return;
+				}
+				
+				f.setNumberOfSeats(nos);
 				f.setTicketPrice(tp);
 				System.out.println(tp);
 				FlightDAO.Update(f);
@@ -148,26 +177,41 @@ public class FlightsServlet extends HttpServlet {
 			}
 			break;
 		case "add":
+			User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
+			if (loggedInUser == null || !loggedInUser.getRole().equals(User.Role.ADMIN)) {
+				response.setStatus(400);
+				return;
+			}
+
 			String flight_number = request.getParameter("flightNumber");
 			String start = request.getParameter("sAirport");
 			String end = request.getParameter("eAirport");
-			int nos = Integer.parseInt(request.getParameter("numberOfSeats"));
-			double price = Double.parseDouble(request.getParameter("price"));
+			Integer nos = Integer.parseInt(request.getParameter("numberOfSeats"));
+			Double price = Double.parseDouble(request.getParameter("price"));
 			Airport a1 = AirportDAO.getByName(start);
 			Airport a2 = AirportDAO.getByName(end);
+			
+			if (flight_number == null || start == null || end == null || nos == null || price == null || a1 == null || a2 == null) {
+				response.setStatus(400);
+				return;
+			}
+			
+			
 			Date date = null;
 			try {
 				date = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("sDate"));
-			} catch (ParseException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				return;
 			}  
 			Date date1 = null;
 			try {
 				date1 = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("eDate"));
-			} catch (ParseException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				return;
 			}
 			int id = FlightDAO.getMaxFlightId();
 			Flight f = new Flight(id,flight_number,date,date1, a1, a2, nos, price, false);
@@ -210,6 +254,11 @@ public class FlightsServlet extends HttpServlet {
 			try {
 				String column=request.getParameter("column");
 				String ascDesc=request.getParameter("ascDesc");
+				if (column == null || ascDesc == null) {
+					response.setStatus(400);
+					return;
+				}
+				
 				flights=FlightDAO.OrderBy(column, ascDesc);
 				
 			} catch (Exception e) {status="faliuer";}
@@ -233,8 +282,6 @@ public class FlightsServlet extends HttpServlet {
 	
 	private void searchByDestination(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		User loggedUser = (User) request.getSession().getAttribute("loggedUser");
-		// check if user is logged in
-		// check if user is authorized to execute get by flight 
 		
 		String startAirport = (String) request.getParameter("startAirport");
 		String endAirport = (String) request.getParameter("endAirport");
@@ -251,11 +298,9 @@ public class FlightsServlet extends HttpServlet {
 	
 	private void getTakenSeats(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		User loggedUser = (User) request.getSession().getAttribute("loggedUser");
-		// check if user is logged in
-		// check if user is authorized to execute get by flight 
 
-		int flightId = Integer.parseInt(request.getParameter("flightId"));
-		int seatNum = Integer.parseInt(request.getParameter("seatNum"));
+		Integer flightId = Integer.parseInt(request.getParameter("flightId"));
+		Integer seatNum = Integer.parseInt(request.getParameter("seatNum"));
 		List<Integer> takenSeats = FlightDAO.getTakenSeats(flightId);
 		
 		Map<String, Object> data = new HashMap<>();

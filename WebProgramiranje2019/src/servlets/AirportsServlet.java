@@ -39,6 +39,11 @@ public class AirportsServlet extends HttpServlet {
 			//admin page, dobija se lista usera u apps
 			HttpSession session = request.getSession();
 			User loggedInUser = (User) session.getAttribute("loggedInUser");
+			if (loggedInUser == null || !loggedInUser.getRole().equals(User.Role.ADMIN)) {
+				response.setStatus(400);
+				return;
+			}
+			
 			ArrayList<Airport> airports = AirportDAO.getAllAirports();
 
 			Map<String, Object> data = new HashMap<>();

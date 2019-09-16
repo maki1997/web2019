@@ -38,8 +38,14 @@ public class UsersServlet extends HttpServlet {
 			//admin page, dobija se lista usera u apps
 			HttpSession session = request.getSession();
 			User loggedInUser = (User) session.getAttribute("loggedInUser");
+			
+			if (loggedInUser == null || !loggedInUser.getRole().equals(User.Role.ADMIN)) {
+				response.setStatus(400);
+				return;
+			}
+			
 			ArrayList<User> users = UserDAO.getAllUsers();
-
+			
 			Map<String, Object> data = new HashMap<>();
 			data.put("user", loggedInUser);
 			data.put("users", users);
@@ -64,9 +70,19 @@ public class UsersServlet extends HttpServlet {
 			try {
 				HttpSession session = request.getSession();
 				User loggedInUser = (User) session.getAttribute("loggedInUser");
-				String username = request.getParameter("userName");
 				
+				if (loggedInUser == null || !loggedInUser.getRole().equals(User.Role.ADMIN)) {
+					response.setStatus(400);
+					return;
+				}
+				
+				String username = request.getParameter("userName");
 				User user = UserDAO.getByUserName(username);
+				if (user == null) {
+					response.setStatus(400);
+					return;
+				}
+				
 				user.setDeleted(true);
 				UserDAO.Update(user);
 				
@@ -116,6 +132,11 @@ public class UsersServlet extends HttpServlet {
 			try {
 				String column=request.getParameter("column");
 				String ascDesc=request.getParameter("ascDesc");
+				if (column == null || ascDesc == null) {
+					response.setStatus(400);
+					return;
+				}
+				
 				users=UserDAO.OrderBy(column, ascDesc);
 				
 			} catch (Exception e) {status="faliuer";}
@@ -132,9 +153,18 @@ public class UsersServlet extends HttpServlet {
 			try {
 				HttpSession session = request.getSession();
 				User loggedInUser = (User) session.getAttribute("loggedInUser");
-				String username = request.getParameter("userName");
+				if (loggedInUser == null || !loggedInUser.getRole().equals(User.Role.ADMIN)) {
+					response.setStatus(400);
+					return;
+				}
 				
+				String username = request.getParameter("userName");
 				User user = UserDAO.getByUserName(username);
+				if (user == null) {
+					response.setStatus(400);
+					return;
+				}
+				
 				user.setBlocked(true);
 				UserDAO.Update(user);
 				

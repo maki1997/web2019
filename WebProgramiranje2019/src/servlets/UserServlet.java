@@ -42,12 +42,8 @@ public class UserServlet extends HttpServlet {
 			//podaci za ulazak u user page
 			HttpSession session = request.getSession();
 			User loggedInUser = (User) session.getAttribute("loggedInUser");
-			String username=request.getParameter("userName");
-			//User owner = UserDAO.getByUserName(username);
-			//ArrayList<Reservation> reservations = null;
+			
 			String status="visiter";
-			
-			
 			if(loggedInUser != null) {
 				status="logedUser";
 			}
@@ -71,10 +67,22 @@ public class UserServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		String status=request.getParameter("status");
 		if(status.equals("edit")) {
+			User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
+			if (loggedInUser == null) {
+				response.setStatus(400);
+				return;
+			}
+			
 			String password=request.getParameter("password");
 			String role=request.getParameter("role");
 			String username=request.getParameter("userName");
 			String un=request.getParameter("un");
+			
+			if (password == null || role == null || username == null || un == null) {
+				response.setStatus(400);
+				return;
+			}
+			
 			Role r;
 			if(role.equals("USER")) {
 				r=Role.USER;
@@ -85,6 +93,11 @@ public class UserServlet extends HttpServlet {
 			System.out.println(username);
 			System.out.println("pre get by username");
 			User u =UserDAO.getByUserName(un);
+			if (u == null) {
+				response.setStatus(400);
+				return;
+			}
+			
 			
 			u.setUsername(username);
 			u.setPassword(password);
@@ -99,7 +112,6 @@ public class UserServlet extends HttpServlet {
 			String jsonData = mapper.writeValueAsString(data);
 			response.setContentType("application/json");
 			response.getWriter().write(jsonData);
-			
 		}
 	}
 

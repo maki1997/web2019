@@ -43,22 +43,26 @@ public class RegisterServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
+		
+		if (username == null || password == null) {
+			response.setStatus(400);
+			return;
+		}
+		
 		System.out.println("kor ime" + username);
 		System.out.println(password);
 		String status = "";
 		
 		User user = UserDAO.getByUserName(username);
-		
 		if (user != null) {
-			status = "failure";
-				
-		}else {
+			response.setStatus(400);
+			return;
+		} else {
 			Date date=new Date();
 			User u=new User(username, password,  date, Role.USER, false,  false, null);
 			UserDAO.Add(u);
 			status = "success";
 		}
-		
 		
 		Map<String, Object> data = new HashMap<>();
 		data.put("status", status);
