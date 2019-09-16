@@ -108,6 +108,30 @@ public class ReservationsServlet extends HttpServlet {
 			response.getWriter().write(jsonData);
 			response.setStatus(200);
 			break;
+		case "delete":
+			User loggedUser1 = (User) request.getSession().getAttribute("loggedInUser");
+			// check if user is logged in
+			// check if user is authorized to execute add reservation
+			
+			int reservationId = Integer.parseInt(request.getParameter("idR"));
+			// check if id != null
+			
+			Reservation reservation = ReservationDAO.getById(reservationId);
+			// check if reservation != null
+			// check if user owns reservation
+			
+			reservation.setDeleted(true);
+			ReservationDAO.update(reservation);
+			
+			
+			Map<String, Object> data1 = new HashMap<>();
+			data1.put("user", loggedUser1);
+			ObjectMapper mapper1 = new ObjectMapper();
+			String jsonData1 = mapper1.writeValueAsString(data1);
+			response.setContentType("application/json");
+			response.getWriter().write(jsonData1);
+			response.setStatus(200);
+			break;
 		}
 	}
 

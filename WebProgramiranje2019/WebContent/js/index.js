@@ -49,6 +49,21 @@ $(document).ready(function(e) {
 		return false;
  	});
 	
+	$('#filterSubmitFlights1').on('click',function(event){
+ 		var param1 = $('#filterParameters2').val().trim();
+ 		var param2 = $('#filterParameters3').val().trim();
+ 		var p1 = '%'+param1+'%';
+ 		var p2 = '%'+param2+'%';
+ 		$.post('FlightsServlet',{'status':"search",'param1':p1,'param2':p2},function(data){
+			if(data.stat=="success"){
+				content.empty();
+				for(f in data.flights){content.append('<tr><td>' + data.flights[f].flightNumber + '</td><td>' + data.flights[f].startAirport.name + '</td><td>' + data.flights[f].endAirport.name + '</td><td>' + format(data.flights[f].startDate) + '</td><td>' + format(data.flights[f].endDate) + '</td><td>' + data.flights[f].numberOfSeats + '</td><td>' + data.flights[f].ticketPrice + '</td><td><a id="delete" href="#deleteModal" type="button" data-toggle="modal"  data-book-id="'+data.flights[f].id+'">Delete flight</a></td></tr>');}
+			}
+		});
+ 		event.preventDefault();
+		return false;
+ 	});
+	
 	$('#order').on('click',function(event){
     	var desc=$('#desc');
     	var asc=$('#asc');
@@ -92,6 +107,14 @@ $(document).ready(function(e) {
 		 
 	});
 	
+	$('#deleteRModal').on('show.bs.modal',function(event){
+		 var idRes = $(event.relatedTarget).data('res-id');
+		 console.log(idRes);
+		 document.getElementById("deletereservation").setAttribute("idRes", idRes);
+		 
+	});
+	
+	
 	$('#resModal').on('show.bs.modal',function(event){
 		 var idFlightRes = $(event.relatedTarget).data('fr-id');
 		 
@@ -101,7 +124,7 @@ $(document).ready(function(e) {
 		 console.log('id leta:'+idFlightRes);
 		 $.get('ReservationsServlet',{'reservationId':idFlightRes},function(data){
 			 for(r in data.reservationsByFlight){
-		 		c.append('<tr><td>' +'Flight number: '+ data.reservationsByFlight[r].startFlight.flightNumber + '</td><td>' +'Flight number: '+ data.reservationsByFlight[r].endFlight.flightNumber + '</td><td>' + data.reservationsByFlight[r].startFlightSeat + '</td><td>' + data.reservationsByFlight[r].endFlightSeat + '</td><td>' + format(data.reservationsByFlight[r].reservationDate) + '</td><td>' + format(data.reservationsByFlight[r].ticketSaleDate) + '</td><td>' + data.reservationsByFlight[r].passenger.username + '</td><td>' + data.reservationsByFlight[r].passengerFirstname + '</td><td>' + data.reservationsByFlight[r].passengerLastname + '</td></tr>');
+		 		c.append('<tr><td>' +'Flight number: '+ data.reservationsByFlight[r].startFlight.flightNumber + '</td><td>' +'Flight number: '+ data.reservationsByFlight[r].endFlight.flightNumber + '</td><td>' + data.reservationsByFlight[r].startFlightSeat + '</td><td>' + data.reservationsByFlight[r].endFlightSeat + '</td><td>' + format(data.reservationsByFlight[r].reservationDate) + '</td><td>' + format(data.reservationsByFlight[r].ticketSaleDate) + '</td><td>' + data.reservationsByFlight[r].passenger.username + '</td><td>' + data.reservationsByFlight[r].passengerFirstname + '</td><td>' + data.reservationsByFlight[r].passengerLastname + '</td><td><a id="rdelete" href="#deleteRModal" type="button" data-toggle="modal"  data-res-id="'+data.reservationsByFlight[r].id+'">Delete reservation</a></td></tr>');
 			 }
 	});
 	});
@@ -190,7 +213,15 @@ $(document).ready(function(e) {
 	   });
 	
 	
-	
+	$('#deletereservation').on('click',function(event){
+	   	var id=$(this).attr('idRes');
+	   	console.log(id);
+	   	$.post('ReservationsServlet',{'idR':id,'status':"delete",},function(data){
+	   		
+	   		
+	   		});
+	   	$('#deleteRModal').modal('toggle');
+		});
 	
 	$('#deleteflight').on('click',function(event){
 	   	var id=$(this).attr('idFlight');
@@ -198,6 +229,8 @@ $(document).ready(function(e) {
 	   		console.log(data.loggedUser);
 	   		
 	   	});
+	   	
+	   	
 	   	
 	   	
 	   	$('#deleteModal').modal('toggle');

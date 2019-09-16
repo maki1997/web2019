@@ -117,6 +117,22 @@
             </div>
         </div>
         
+        <div class="modal fade" id="deleteRModal" role="dialog" >
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Are you sure?</h5>
+                    </div>
+                    <div class="modal-body">Are you sure you want to delete this Reservation?
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                        <a class="btn btn-danger" id="deletereservation">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <div class="modal fade" id="resModal" role="dialog" >
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
@@ -225,9 +241,18 @@
         </div>
       </div>
     </div>
-        <div class="form-group-sm">
+    	<div id="destSearch" class="form-group-sm">
         	<div class="input-group" id="filterFlights">
-            	<input type="text" class="form-control" placeholder="Search..." autocomplete="off" id="filterParameters">
+            	<input type="text" class="form-control" placeholder="Search by start dest..." autocomplete="off" id="filterParameters2">
+            	<input type="text" class="form-control" placeholder="Search by end dest..." autocomplete="off" id="filterParameters3">
+            	<span class="input-group-btn">
+            	<button class="btn btn-danger btn-sm" id="filterSubmitFlights1" >Search</button>
+            	</span>
+            </div>
+         </div>
+        <div id="numberSearch" class="form-group-sm">
+        	<div class="input-group" id="filterFlights">
+            	<input type="text" class="form-control" placeholder="Search by flight number..." autocomplete="off" id="filterParameters">
             	<span class="input-group-btn">
             	<button class="btn btn-danger btn-sm" id="filterSubmitFlights" >Search</button>
             	</span>
