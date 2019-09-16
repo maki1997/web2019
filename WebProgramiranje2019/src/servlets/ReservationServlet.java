@@ -31,7 +31,7 @@ public class ReservationServlet extends HttpServlet {
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String status = (String) request.getAttribute("status");
+		String status = (String) request.getParameter("status");
 		switch(status) {
 		case "addReservation":
 			addReservation(request, response);
@@ -52,7 +52,7 @@ public class ReservationServlet extends HttpServlet {
 	
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException  {
-		String status = (String) request.getAttribute("status");
+		String status = (String) request.getParameter("status");
 		switch(status) {
 		case "getByFlight":
 			getReservationsByFlight(request, response);
@@ -67,16 +67,16 @@ public class ReservationServlet extends HttpServlet {
 	
 	
 	private void addReservation(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		User loggedUser = (User) request.getSession().getAttribute("loggedUser");
+		User loggedUser = (User) request.getSession().getAttribute("loggedInUser");
 		// check if user is logged in
 		// check if user is authorized to execute add reservation
 		
-		int startFlightId = (int) request.getAttribute("startFlight");	
-		int endFlightId = (int) request.getAttribute("endFlight");
-		int startFlightSeat = (int) request.getAttribute("startFlightSeat");
-		int endFlightSeat = (int) request.getAttribute("endFlightSeat");
-		String firstname = (String) request.getAttribute("firstname");
-		String lastname = (String) request.getAttribute("lastname");
+		Integer startFlightId = Integer.parseInt( request.getParameter("startFlight"));	
+		Integer endFlightId = Integer.parseInt( request.getParameter("endFlight"));
+		Integer startFlightSeat = Integer.parseInt( request.getParameter("startFlightSeat"));
+		Integer endFlightSeat = Integer.parseInt( request.getParameter("endFlightSeat"));
+		String firstname = (String) request.getParameter("firstname");
+		String lastname = (String) request.getParameter("lastname");
 		// check if all parameters are non null
 		
 		Flight startFlight = FlightDAO.getFlightById(startFlightId);
@@ -98,11 +98,11 @@ public class ReservationServlet extends HttpServlet {
 	
 	
 	private void confirmReservation(HttpServletRequest request, HttpServletResponse response) {
-		User loggedUser = (User) request.getSession().getAttribute("loggedUser");
+		User loggedUser = (User) request.getSession().getAttribute("loggedInUser");
 		// check if user is logged in
 		// check if user is authorized to execute add reservation
 		
-		int reservationId = (int) request.getAttribute("reservationId");
+		Integer reservationId = Integer.parseInt( request.getParameter("reservationId"));
 		// check if user is owner of reservation
 		
 		Reservation reservation = ReservationDAO.getById(reservationId);
@@ -114,11 +114,11 @@ public class ReservationServlet extends HttpServlet {
 	
 	
 	private void cancelReservation(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		User loggedUser = (User) request.getSession().getAttribute("loggedUser");
+		User loggedUser = (User) request.getSession().getAttribute("loggedInUser");
 		// check if user is logged in
 		// check if user is authorized to execute add reservation
 		
-		int reservationId = (int) request.getAttribute("reservationId");
+		Integer reservationId = Integer.parseInt( request.getParameter("reservationId"));
 		// check if id != null
 		
 		Reservation reservation = ReservationDAO.getById(reservationId);
@@ -141,11 +141,11 @@ public class ReservationServlet extends HttpServlet {
 	
 	
 	private void updateReservation(HttpServletRequest request, HttpServletResponse response) {
-		User loggedUser = (User) request.getSession().getAttribute("loggedUser");
+		User loggedUser = (User) request.getSession().getAttribute("loggedInUser");
 		// check if user is logged in
 		// check if user is authorized to update reservation
 		
-		int reservationId = (int) request.getAttribute("reservationId");
+		Integer reservationId = Integer.parseInt( request.getParameter("reservationId"));
 		// check if id != null
 		
 		Reservation reservation = ReservationDAO.getById(reservationId);
@@ -158,25 +158,43 @@ public class ReservationServlet extends HttpServlet {
 		 * 2) getEndFlightSeat
 		 * 3) firstname
 		 * 4) lastname 
-		 * 
-		 * 
-		 * Get all attributes from request
-		 * Check if != null
-		 * 
-		 * 
-		 * 
 		**/
+		
+		Integer startFlightSeat = Integer.parseInt(request.getParameter("getStartFlightSeat"));
+		if (startFlightSeat  != null) {
+			reservation.setStartFlightSeat(startFlightSeat);
+		}
+		
+		Integer endFlightSeat = Integer.parseInt(request.getParameter("endFlightSeat"));
+		if (endFlightSeat != null) {
+			reservation.setEndFlightSeat(endFlightSeat);
+		}
+		
+		if (request.getParameter("firstname") != null) {
+			reservation.setPassengerFirstname(request.getParameter("firstname"));
+		}
+		
+		if (request.getParameter("lastname") != null) {
+			reservation.setPassengerFirstname(request.getParameter("lastname"));
+		}
+		
+		
+		// UPDATE OR RETURN BAD REQUEST
+		if (reservation.getTicketSaleDate() == null) {
+			ReservationDAO.update(reservation);
+		} else {
+			response.setStatus(400);
+		}
 		
 	}
 	
 	
-	
 	private void getReservationsByFlight(HttpServletRequest request, HttpServletResponse response) throws IOException{
-		User loggedUser = (User) request.getSession().getAttribute("loggedUser");
+		User loggedUser = (User) request.getSession().getAttribute("loggedInUser");
 		// check if user is logged in
 		// check if user is authorized to execute get by flight 
 		
-		int flightId = (int) request.getAttribute("flightId");
+		Integer flightId = Integer.parseInt(request.getParameter("flightId"));
 		// flightId != null
 		
 		List<Reservation> reservations = ReservationDAO.getByStartFlight(flightId);
@@ -189,7 +207,6 @@ public class ReservationServlet extends HttpServlet {
 		response.setContentType("application/json");
 		response.getWriter().write(jsonData);
 		response.setStatus(200);
-		
 		
 	}
 }

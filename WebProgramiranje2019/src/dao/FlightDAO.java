@@ -371,5 +371,48 @@ public class FlightDAO {
 		
 		return null;
 	}
+	
+	
+	public static List<Flight> searchByAirports(String start, String end) {
+		Connection conn = ConnectionManager.getConnection();
+		List<Flight> flights = new ArrayList<>();
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		
+		try {
+			String query = "SELECT * FROM flights WHERE (startAirport IN (SELECT id FROM airports WHERE name LIKE ?) AND deleted = 0)"
+					     + "AND "
+					     + "(endAirport IN (SELECT id FROM airports WHERE name LIKE ?) AND deleted = 0);";
+			int index = 1;
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(index++, start); 
+			pstmt.setString(index++, end);
+			rset = pstmt.executeQuery();
+			
+			while (rset.next()) {
+				int id = rset.getInt("id");
+				String flightNumber = rset.getString("flightNumber");
+				Date startDate = rset.getDate("startDate");
+				Date endDate = rset.getDate("endDate");
+				Airport startAirport = AirportDAO.getById(rset.getInt("startAirport"));
+				Airport endAirport = AirportDAO.getById(rset.getInt("endAirport"));
+				int numberOfSeats = rset.getInt("numberOfSeats");
+				double ticketPrice = rset.getDouble("ticketPrice");
+				
+				Flight f = new Flight(id, flightNumber, startDate, endDate, startAirport, endAirport, numberOfSeats, ticketPrice, false);
+				flights.add(f);
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			try {
+				pstmt.close(); 
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}
+		}
+		
+		return flights;
+	}
 
 }
