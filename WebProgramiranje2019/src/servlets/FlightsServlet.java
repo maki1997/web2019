@@ -222,7 +222,7 @@ public class FlightsServlet extends HttpServlet {
 			response.setContentType("application/json");
 			response.getWriter().write(jsonData);	
 			break;
-		case "searchByDestination":
+		case "search":
 			searchByDestination(request, response);
 			break;
 		case "getTakenSeats":

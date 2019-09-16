@@ -8,7 +8,10 @@ $(document).ready(function(e) {
  			if(data.user != null){
  				userName = data.user.username;
  			}
- 			content.append('<tr><td>' + data.flights[f].flightNumber + '</td><td>' + data.flights[f].startAirport.name + '</td><td>' + data.flights[f].endAirport.name + '</td><td>' + format(data.flights[f].startDate) + '</td><td>' + format(data.flights[f].endDate) + '</td><td>' + data.flights[f].numberOfSeats + '</td><td>' + data.flights[f].ticketPrice + '</td><td><a id="delete" href="#deleteModal" type="button" data-toggle="modal"  data-book-id="'+data.flights[f].id+'">Delete flight</a></td><td><a id="edit" href="#editModal" type="button" data-toggle="modal"  data-f-id="'+data.flights[f].id+'">Edit flight</a></td><td><a id="reservation" href="#resModal" type="button" data-toggle="modal"  data-fr-id="'+data.flights[f].id+'">Reservations</a></td></tr>');
+ 			content.append('<tr><td>' + data.flights[f].flightNumber + '</td><td>' + data.flights[f].startAirport.name + '</td><td>' +
+ 					data.flights[f].endAirport.name + '</td><td>' + format(data.flights[f].startDate) + '</td><td>' +
+ 					format(data.flights[f].endDate) + '</td><td>' + data.flights[f].numberOfSeats + '</td><td>' +
+ 					data.flights[f].ticketPrice + '</td><td><a id="delete" href="#deleteModal" type="button" data-toggle="modal"  data-book-id="'+data.flights[f].id+'">Delete flight</a></td><td><a id="edit" href="#editModal" type="button" data-toggle="modal"  data-f-id="'+data.flights[f].id+'">Edit flight</a></td><td><a id="reservation" href="#resModal" type="button" data-toggle="modal"  data-fr-id="'+data.flights[f].id+'">Reservations</a></td></tr>');
  			
  		}
  		if(data.user != null){
@@ -19,6 +22,7 @@ $(document).ready(function(e) {
  		    var adminPage =$("#adminPage");
  		    if(data.user.role != "ADMIN"){
  		    	$('#addFButton').hide();
+ 		    	
  		    	
  		    }
  		    $("#loggeduser").text(data.user.username)
@@ -42,7 +46,7 @@ $(document).ready(function(e) {
  		$.post('FlightsServlet',{'status':"filter",'param':param},function(data){
 			if(data.stat=="success"){
 				content.empty();
-				for(f in data.flights){content.append('<tr><td>' + data.flights[f].flightNumber + '</td><td>' + data.flights[f].startAirport.name + '</td><td>' + data.flights[f].endAirport.name + '</td><td>' + format(data.flights[f].startDate) + '</td><td>' + format(data.flights[f].endDate) + '</td><td>' + data.flights[f].numberOfSeats + '</td><td>' + data.flights[f].ticketPrice + '</td><td><a id="delete" href="#deleteModal" type="button" data-toggle="modal"  data-book-id="'+data.flights[f].id+'">Delete flight</a></td></tr>');}
+				for(f in data.flights){content.append('<tr><td>' + data.flights[f].flightNumber + '</td><td>' + data.flights[f].startAirport.name + '</td><td>' + data.flights[f].endAirport.name + '</td><td>' + format(data.flights[f].startDate) + '</td><td>' + format(data.flights[f].endDate) + '</td><td>' + data.flights[f].numberOfSeats + '</td><td>' + data.flights[f].ticketPrice + '</td><td><a id="delete" href="#deleteModal" type="button" data-toggle="modal"  data-book-id="'+data.flights[f].id+'">Delete flight</a></td><td><a id="edit" href="#editModal" type="button" data-toggle="modal"  data-f-id="'+data.flights[f].id+'">Edit flight</a></td><td><a id="reservation" href="#resModal" type="button" data-toggle="modal"  data-fr-id="'+data.flights[f].id+'">Reservations</a></td></tr>');}
 			}
 		});
  		event.preventDefault();
@@ -52,13 +56,14 @@ $(document).ready(function(e) {
 	$('#filterSubmitFlights1').on('click',function(event){
  		var param1 = $('#filterParameters2').val().trim();
  		var param2 = $('#filterParameters3').val().trim();
- 		var p1 = '%'+param1+'%';
- 		var p2 = '%'+param2+'%';
- 		$.post('FlightsServlet',{'status':"search",'param1':p1,'param2':p2},function(data){
-			if(data.stat=="success"){
+ 		var param11 = '%'+param1+'%';
+ 		var param22 = '%'+param2+'%';
+ 		console.log(param1+param2)
+ 		$.post('FlightsServlet',{'status':"search",'startAirport':param11,'endAirport':param22},function(data){
+			
 				content.empty();
-				for(f in data.flights){content.append('<tr><td>' + data.flights[f].flightNumber + '</td><td>' + data.flights[f].startAirport.name + '</td><td>' + data.flights[f].endAirport.name + '</td><td>' + format(data.flights[f].startDate) + '</td><td>' + format(data.flights[f].endDate) + '</td><td>' + data.flights[f].numberOfSeats + '</td><td>' + data.flights[f].ticketPrice + '</td><td><a id="delete" href="#deleteModal" type="button" data-toggle="modal"  data-book-id="'+data.flights[f].id+'">Delete flight</a></td></tr>');}
-			}
+				for(f in data.flights){content.append('<tr><td>' + data.flights[f].flightNumber + '</td><td>' + data.flights[f].startAirport.name + '</td><td>' + data.flights[f].endAirport.name + '</td><td>' + format(data.flights[f].startDate) + '</td><td>' + format(data.flights[f].endDate) + '</td><td>' + data.flights[f].numberOfSeats + '</td><td>' + data.flights[f].ticketPrice + '</td><td><a id="delete" href="#deleteModal" type="button" data-toggle="modal"  data-book-id="'+data.flights[f].id+'">Delete flight</a></td><td><a id="edit" href="#editModal" type="button" data-toggle="modal"  data-f-id="'+data.flights[f].id+'">Edit flight</a></td><td><a id="reservation" href="#resModal" type="button" data-toggle="modal"  data-fr-id="'+data.flights[f].id+'">Reservations</a></td></tr>');}
+			
 		});
  		event.preventDefault();
 		return false;
@@ -75,7 +80,7 @@ $(document).ready(function(e) {
 		$.post('FlightsServlet',{'status':"order",'ascDesc':ascDesc,'column':column},function(data){
 			if(data.stat=="success"){
 				content.empty();
-				for(f in data.flights){content.append('<tr><td>' + data.flights[f].flightNumber + '</td><td>' + data.flights[f].startAirport.name + '</td><td>' + data.flights[f].endAirport.name + '</td><td>' + format(data.flights[f].startDate) + '</td><td>' + format(data.flights[f].endDate) + '</td><td>' + data.flights[f].numberOfSeats + '</td><td>' + data.flights[f].ticketPrice + '</td><td><a id="delete" href="#deleteModal" type="button" data-toggle="modal"  data-book-id="'+data.flights[f].id+'">Delete flight</a></td><td><a id="edit" href="#editModal" type="button" data-toggle="modal"  data-f-id="'+data.flights[f].id+'">Edit flight</a></td></tr>');}
+				for(f in data.flights){content.append('<tr><td>' + data.flights[f].flightNumber + '</td><td>' + data.flights[f].startAirport.name + '</td><td>' + data.flights[f].endAirport.name + '</td><td>' + format(data.flights[f].startDate) + '</td><td>' + format(data.flights[f].endDate) + '</td><td>' + data.flights[f].numberOfSeats + '</td><td>' + data.flights[f].ticketPrice + '</td><td><a id="delete" href="#deleteModal" type="button" data-toggle="modal"  data-book-id="'+data.flights[f].id+'">Delete flight</a></td><td><a id="edit" href="#editModal" type="button" data-toggle="modal"  data-f-id="'+data.flights[f].id+'">Edit flight</a></td><td><a id="reservation" href="#resModal" type="button" data-toggle="modal"  data-fr-id="'+data.flights[f].id+'">Reservations</a></td></tr>');}
 			}
 		});
 		event.preventDefault();
