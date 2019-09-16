@@ -1,7 +1,7 @@
 $(document).ready(function(e) {
 	var userName= "";
 	var content=$('#resBody');
- 	$.get('ReservationsServlet',{},function(data){
+ 	$.get('ReservationsServlet',{'status':"getRezervacijaPoUseru"},function(data){
  		for (r in data.reservations) {
  			console.log(data.reservations[r]);
  			if(data.user != null){
@@ -18,6 +18,9 @@ $(document).ready(function(e) {
  		    var adminPage =$("#adminPage");
  		    if(data.user.role != "ADMIN"){
  		    	$('#addFButton').hide();
+
+ 		    	$('#adminPage').hide();
+ 		    	$('#airports').hide();
  		    	
  		    }
  		    $("#loggeduser").text(data.user.username)
@@ -29,6 +32,9 @@ $(document).ready(function(e) {
  		    y.style.display = "none";
 
 	 		   $('#addFButton').hide();
+
+		    	$('#adminPage').hide();
+		    	$('#airports').hide();
  		}
  		
  		

@@ -43,32 +43,40 @@ public class ReservationsServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		try {
-			//lista letova
-			HttpSession session = request.getSession();
-			User loggedInUser = (User) session.getAttribute("loggedInUser");
-			if (loggedInUser == null) {
-				response.setStatus(400);
-				return;
-			}
-			
-			Integer userId = loggedInUser.getId();
+		String status = request.getParameter("status");
+		System.out.println(status);
+		switch (status) {
+		
+		case "getRezervacijaPoUseru":
+		HttpSession session = request.getSession();
+		User loggedInUser = (User) session.getAttribute("loggedInUser");
+		if (loggedInUser == null) {
+			response.setStatus(400);
+			return;
+		}
+		Integer userId = loggedInUser.getId();
+		List<Reservation> res = ReservationDAO.getByUser(userId);
+		Map<String, Object> data = new HashMap<>();
+		data.put("user", loggedInUser);
+		data.put("reservations", res);
+		ObjectMapper mapper = new ObjectMapper();
+		String jsonData = mapper.writeValueAsString(data);
+		response.setContentType("application/json");
+		response.getWriter().write(jsonData);
+		break;
+		
+		case "getRezervacijaPoLetu":
 			Integer flightId = Integer.parseInt(request.getParameter("reservationId"));
 			System.out.println(flightId);
-			List<Reservation> res = ReservationDAO.getByUser(userId);
 			List<Reservation> res1 = ReservationDAO.getByStartFlight(flightId);
-			Map<String, Object> data = new HashMap<>();
-			data.put("user", loggedInUser);
-			data.put("reservations", res);
-			data.put("reservationsByFlight", res1);
-			ObjectMapper mapper = new ObjectMapper();
-			String jsonData = mapper.writeValueAsString(data);
+			Map<String, Object> data1 = new HashMap<>();
+			data1.put("reservationsByFlight", res1);
+			ObjectMapper mapper1 = new ObjectMapper();
+			String jsonData1 = mapper1.writeValueAsString(data1);
 			response.setContentType("application/json");
-			response.getWriter().write(jsonData);
-
-		} catch (Exception e) {
-			System.out.println(e);
-			e.printStackTrace();
+			response.getWriter().write(jsonData1);
+			break;
+			
 		}
 	}
 
@@ -125,7 +133,7 @@ public class ReservationsServlet extends HttpServlet {
 		case "delete":
 			User loggedUser1 = (User) request.getSession().getAttribute("loggedInUser");
 			// check if user is logged in
-			if (loggedUser1 == null || !loggedUser1.getRole().equals(User.Role.ADMIN)) {
+			if (loggedUser1 == null ) {
 				response.setStatus(400);
 				return;
 			}

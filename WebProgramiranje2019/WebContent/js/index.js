@@ -22,6 +22,8 @@ $(document).ready(function(e) {
  		    var adminPage =$("#adminPage");
  		    if(data.user.role != "ADMIN"){
  		    	$('#addFButton').hide();
+ 		    	$('#adminPage').hide();
+ 		    	$('#airports').hide();
  		    	
  		    	
  		    }
@@ -34,6 +36,9 @@ $(document).ready(function(e) {
  		    y.style.display = "none";
 
 	 		   $('#addFButton').hide();
+
+		    	$('#adminPage').hide();
+		    	$('#airports').hide();
  		}
  		
  		
@@ -127,7 +132,7 @@ $(document).ready(function(e) {
 		 localStorage.setItem("flight",idFlightRes);
 		 c.empty();
 		 console.log('id leta:'+idFlightRes);
-		 $.get('ReservationsServlet',{'reservationId':idFlightRes},function(data){
+		 $.get('ReservationsServlet',{'reservationId':idFlightRes,'status':"getRezervacijaPoLetu"},function(data){
 			 for(r in data.reservationsByFlight){
 		 		c.append('<tr><td>' +'Flight number: '+ data.reservationsByFlight[r].startFlight.flightNumber + '</td><td>' +'Flight number: '+ data.reservationsByFlight[r].endFlight.flightNumber + '</td><td>' + data.reservationsByFlight[r].startFlightSeat + '</td><td>' + data.reservationsByFlight[r].endFlightSeat + '</td><td>' + format(data.reservationsByFlight[r].reservationDate) + '</td><td>' + format(data.reservationsByFlight[r].ticketSaleDate) + '</td><td>' + data.reservationsByFlight[r].passenger.username + '</td><td>' + data.reservationsByFlight[r].passengerFirstname + '</td><td>' + data.reservationsByFlight[r].passengerLastname + '</td><td><a id="rdelete" href="#deleteRModal" type="button" data-toggle="modal"  data-res-id="'+data.reservationsByFlight[r].id+'">Delete reservation</a></td></tr>');
 			 }

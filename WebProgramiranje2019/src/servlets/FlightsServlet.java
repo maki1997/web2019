@@ -145,7 +145,7 @@ public class FlightsServlet extends HttpServlet {
 				if (nos == null || tp == null) {
 					response.setStatus(400);
 					return;
-				} else if (nos > 0 && tp > 0.0) {
+				} else if (nos <= 0 || tp <= 0.0) {
 					response.setStatus(400);
 					return;
 				}

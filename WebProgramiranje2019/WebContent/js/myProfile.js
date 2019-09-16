@@ -20,6 +20,9 @@ $('document').ready(function(e){
 		    var adminPage =$("#adminPage");
 		    if(data.user.role != "ADMIN"){
 		    	adminPage.hide();
+
+ 		    	$('#adminPage').hide();
+ 		    	$('#airports').hide();
 		    }
 		    $("#loggeduser").text(data.user.username)
 		    
@@ -31,6 +34,9 @@ $('document').ready(function(e){
 		}
 		if(data.status == 'blocked'){
 			$('.mainDiv').hide();
+
+		    	$('#adminPage').hide();
+		    	$('#airports').hide();
 		}
 		username.val(data.user.username);
 		userName=(data.user.username);
